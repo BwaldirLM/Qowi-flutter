@@ -43,10 +43,10 @@ class _SplashPageState extends State<SplashPage> {
       // redirect to login
       redirectToLogin();
     } else {
-      final username = await supabaseClient.from('app_users').
-          select('nombres').
-          eq('user_id', user.id).execute();
-      prefs.username = username.data[0]['nombres'];
+      //final username = await supabaseClient.from('app_users').
+        //  select('nombres').
+          //eq('user_id', user.id).execute();
+      //prefs.username = username.data[0]['nombres'];
 
       redirectToHome();
     }
