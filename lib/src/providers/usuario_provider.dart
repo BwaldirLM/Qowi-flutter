@@ -1,7 +1,5 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
+
 import 'package:supabase/supabase.dart';
-import 'package:http/http.dart' as http;
 import 'package:qowi/src/models/user_model.dart';
 import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
 
@@ -70,6 +68,9 @@ class UsuarioProvider {
       return false;
 
     }
-
+    Future signOut() async {
+      final response = await _client.signOut();
+      if(response.error == null) _prefs.clear();
+    }
   }
 

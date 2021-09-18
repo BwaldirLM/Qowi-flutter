@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+
+import 'package:qowi/src/pages/cuy_page.dart';
+import 'package:qowi/src/pages/detalle_contenedor_page.dart';
+import 'package:qowi/src/pages/galpon_page.dart';
 import 'package:qowi/src/pages/home_page.dart';
 import 'package:qowi/src/pages/login_page.dart';
 import 'package:qowi/src/pages/register_page.dart';
 import 'package:qowi/src/pages/splash_page.dart';
+
 import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
 import 'package:qowi/src/services/auth_services.dart';
 
@@ -29,10 +34,13 @@ class MyApp extends StatelessWidget {
             ),
             initialRoute: '/',
             routes: {
-              '/': (context) => SplashPage(),
-              'login': (context) => LoginPage(),
-              'register': (context) => RegisterPage(),
-              'home': (context) => HomePage()
+              '/'                : (context) => SplashPage(),
+              'login'            : (context) => LoginPage(),
+              'register'         : (context) => RegisterPage(),
+              'home'             : (context) => HomePage(),
+              'galpon'           : (context) => GalponPage(),
+              'detalleContenedor':(context) => DetalleContenedorPage(),
+              'cuy'              : (context) => CuyPage()
             }
             ),
       )

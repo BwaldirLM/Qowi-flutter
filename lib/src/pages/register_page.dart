@@ -49,32 +49,32 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget register(BuildContext context, Size size, UsuarioProvider usuarioProvider) {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          SafeArea(
-              child: Container(
-                height: size.height * 0.25,
-              )),
-          Text(
-            'Nuevo Usuario',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
-          Container(
-            child: Form(
-              key: formKey,
-              child: Column(
-                children: [
-                  _crearNombre(size),
-                  _crearApellido(size),
-                  _crearEmail(size),
-                  _crearContrasena(size),
-                  _crearBoton(usuarioProvider)
-                ],
+        child: Column(
+          children: [
+            SafeArea(
+                child: Container(
+                  height: size.height * 0.25,
+                )),
+            Text(
+              'Nuevo Usuario',
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Container(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    _crearNombre(size),
+                    _crearApellido(size),
+                    _crearEmail(size),
+                    _crearContrasena(size),
+                    _crearBoton(usuarioProvider)
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      )
+          ],
+        )
 
     );
   }
@@ -113,31 +113,31 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _crearApellido(Size size) {
     return Container(
-      width: size.width * 0.85,
-      margin: EdgeInsets.only(right: size.height * 0.075),
-      padding: EdgeInsets.symmetric(horizontal: 10),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black26,
-                //blurRadius: 3,
-                spreadRadius: 1
-            )
-          ]
-      ),
-      child: TextFormField(
+        width: size.width * 0.85,
+        margin: EdgeInsets.only(right: size.height * 0.075),
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black26,
+                  //blurRadius: 3,
+                  spreadRadius: 1
+              )
+            ]
+        ),
+        child: TextFormField(
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(
             border: InputBorder.none,
             icon: Icon(Icons.person_outline),
             labelText: 'Apellidos',
           ),
-        onSaved: (value) => user.apellidos=value!,
-        validator: (value){
+          onSaved: (value) => user.apellidos=value!,
+          validator: (value){
             if(value!.isEmpty) return 'Este campo es obligatorio';
-        },
-      )
+          },
+        )
     );
   }
 
@@ -159,10 +159,10 @@ class _RegisterPageState extends State<RegisterPage> {
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-            border: InputBorder.none,
-            icon: Icon(Icons.alternate_email),
-            labelText: 'Correo Electrónico',
-            hintText:  'correo@mail.com',
+          border: InputBorder.none,
+          icon: Icon(Icons.alternate_email),
+          labelText: 'Correo Electrónico',
+          hintText:  'correo@mail.com',
         ),
         onSaved: (value) => email = value!,
         validator: (value){
@@ -232,7 +232,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
 /*class RegisterPage extends StatelessWidget {
   final usuarioProvider = new UsuarioProvider();
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -240,7 +239,6 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Stack(children: [_fondo(), _register(context, size)]),
     );
   }
-
   Widget _fondo() {
     return Stack(
       children: [
@@ -251,7 +249,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
-
   Widget _register(BuildContext context, Size size) {
     final bloc = new LoginBloc();
     return SingleChildScrollView(
@@ -356,7 +353,7 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(40)),                      
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(40)),
                   boxShadow: [
                     BoxShadow(
                         color: Colors.black26,
@@ -532,7 +529,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
     );
   }
-
   _registro(String email, String password) async {
     print(email);
     print(password);

@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:qowi/src/bloc/home_bloc.dart';
-import 'package:qowi/src/pages/galpon_page.dart';
+import 'package:qowi/src/pages/galpones_page.dart';
 import 'package:qowi/src/pages/info_page.dart';
 
-import 'package:qowi/src/pages/login_page.dart';
 import 'package:qowi/src/pages/recursos_page.dart';
-import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
+
 import 'package:qowi/src/services/auth_services.dart';
 
 class HomePage extends StatelessWidget {
 
 
-  final _prefs = PreferenciasUsuario();
+
   final _homeBloc = HomeBloc();
 
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthServices.of(context).usuarioProvider.supabaseClint;
+    final auth = AuthServices.of(context).usuarioProvider;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
+        iconTheme: IconThemeData(
+          color: Colors.blueAccent
+        ),
         title: Text(
             'QOWI',
           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w700),
         ),
         actions: [
-          IconButton(onPressed: null, icon: Icon(Icons.account_circle))
+          IconButton(icon: Icon(Icons.account_circle),
+              onPressed: () {
+                auth.signOut();
+                Navigator.pushReplacementNamed(context, 'login');
+          }
+          )
         ],
+        centerTitle: true,
       ),
       body: _callPage(_homeBloc),
       bottomNavigationBar: _bottomNavigationBar(_homeBloc),
@@ -73,7 +81,7 @@ class HomePage extends StatelessWidget {
             case NavBarItem.RECURSOS:
               return RecursosPage();
             case NavBarItem.ADD:
-              return GalponPage();
+              return GalponesPage();
           }
         }
     );

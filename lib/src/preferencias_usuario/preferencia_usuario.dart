@@ -38,4 +38,8 @@ class PreferenciasUsuario {
   set username(String value){
     _prefs.setString('username', value);
   }
+
+  void clear(){
+    _prefs.clear();
+  }
 }

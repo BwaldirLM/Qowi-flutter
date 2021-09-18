@@ -3,7 +3,6 @@ import 'package:qowi/src/data/data.dart';
 import 'package:qowi/src/pages/home_page.dart';
 import 'package:qowi/src/pages/login_page.dart';
 import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
-import 'package:qowi/src/services/auth_services.dart';
 import 'package:supabase/supabase.dart';
 
 const persistentSessionKey = 'persistentSessionKey';
@@ -43,12 +42,15 @@ class _SplashPageState extends State<SplashPage> {
       // redirect to login
       redirectToLogin();
     } else {
-      //final username = await supabaseClient.from('app_users').
-        //  select('nombres').
-          //eq('user_id', user.id).execute();
-      //prefs.username = username.data[0]['nombres'];
-
-      redirectToHome();
+      final username = await supabaseClient.
+      from('app_users').
+          select('nombres').
+          eq('user_id', user.id).execute();
+      if(username.data == null) redirectToLogin();
+      else{
+        prefs.username = username.data[0]['nombres'];
+        redirectToHome();
+      }
     }
   }
 
