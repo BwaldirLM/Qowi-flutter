@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qowi/src/bloc/login_bloc.dart';
 import 'package:qowi/src/disenos/curvas.dart';
 import 'package:qowi/src/models/user_model.dart';
 import 'package:qowi/src/providers/usuario_provider.dart';
