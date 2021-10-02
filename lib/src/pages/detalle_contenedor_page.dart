@@ -13,7 +13,7 @@ class DetalleContenedorPage extends StatelessWidget {
     final contenedor = ModalRoute.of(context)!.settings.arguments as ContenedorModel;
     final size = MediaQuery.of(context).size;
     final cuyBloc = CuyBloc();
-    cuyBloc.cargarCuysContenedor(contenedor);
+    cuyBloc.cargarCuysContenedor(contenedor.id);
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalles', style: TextStyle(color: Colors.black)),
@@ -85,7 +85,7 @@ void agregarCuys(BuildContext context, CuyBloc bloc, ContenedorModel contenedor)
       context: context,
       builder: (context){
       bloc.incrementar(1);
-      String tipoCuy = 'reproductora';
+      bloc.changeTipo('reproductora');
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Text('Agregar cuys'),
@@ -150,8 +150,8 @@ void agregarCuys(BuildContext context, CuyBloc bloc, ContenedorModel contenedor)
                 child: Text('Aceptar'),
               onPressed: (){
                 final cuyTemp = CuyModel();
-                cuyTemp.contenedor = contenedor;
-                cuyTemp.tipo = tipoCuy;
+                cuyTemp.contenedor = contenedor.id;
+                cuyTemp.tipo = bloc.tipoValue;
                   if(bloc.contadorValue == 1){
                     bloc.addCuy(cuyTemp);
                   }

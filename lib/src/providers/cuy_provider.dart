@@ -45,11 +45,11 @@ class CuyProvider{
   }
 
 
-  Future<List<CuyModel>> cargarCuysContenedor(ContenedorModel contenedor)async{
+  Future<List<CuyModel>> cargarCuysContenedor(int contenedor)async{
     final response = await client
         .from('cuy')
         .select()
-        .eq('contenedor', contenedor.id)
+        .eq('contenedor', contenedor)
         .execute();
 
     final decodedData = response.toJson();
@@ -71,6 +71,7 @@ class CuyProvider{
     final response = await client.from('cuy')
         .insert([cuy.toJson()])
         .execute();
+
   }
 
   Future<List<CuyModel>> cargarCuysMadres()async{
@@ -92,4 +93,54 @@ class CuyProvider{
 
     return cuys;
   }
+
+  Future<List<CuyModel>> cargarMadres(ContenedorModel contenedor)async{
+    final response = await client.from('cuy')
+        .select()
+        .eq('contenedor', contenedor.id)
+        .eq('tipo', 'reproductora')
+        .execute();
+    final decodedData = response.toJson();
+    final cuysData = decodedData['data'];
+    List<CuyModel> cuys = [];
+    cuysData.forEach((element){
+      final cuy = CuyModel.fromJson(element);
+      cuys.add(cuy);
+    });
+    return cuys;
+  }
+
+  Future<List<CuyModel>> cargarPadres(ContenedorModel contenedor)async {
+    final response = await client.from('cuy')
+        .select()
+        .eq('contenedor', contenedor.id)
+        .eq('tipo', 'padrillo')
+        .eq('estado', true)
+        .execute();
+
+    final decodedData = response.toJson();
+    final cuysData = decodedData['data'];
+    List<CuyModel> cuys = [];
+    cuysData.forEach((element){
+      final cuy = CuyModel.fromJson(element);
+      cuys.add(cuy);
+    });
+    if(cuys.isEmpty){
+      final response = await client.from('cuy')
+          .select()
+          .eq('tipo', 'padrillo')
+          .eq('estado', true)
+          .execute();
+
+      final decodedData = response.toJson();
+      final cuysData = decodedData['data'];
+      cuysData.forEach((element){
+        final cuy = CuyModel.fromJson(element);
+        cuys.add(cuy);
+      });
+    }
+    return cuys;
+
+  }
+
 }

@@ -5,6 +5,7 @@ import 'package:qowi/src/pages/detalle_contenedor_page.dart';
 import 'package:qowi/src/pages/galpon_page.dart';
 import 'package:qowi/src/pages/home_page.dart';
 import 'package:qowi/src/pages/login_page.dart';
+import 'package:qowi/src/pages/nacimiento_page.dart';
 import 'package:qowi/src/pages/register_page.dart';
 import 'package:qowi/src/pages/splash_page.dart';
 
@@ -31,6 +32,11 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
               primarySwatch: Colors.blue,
+              appBarTheme: AppBarTheme(
+                color: Colors.transparent,
+                elevation: 0,
+                iconTheme: IconThemeData(color: Colors.black),
+              )
             ),
             initialRoute: '/',
             routes: {
@@ -40,7 +46,8 @@ class MyApp extends StatelessWidget {
               'home'             : (context) => HomePage(),
               'galpon'           : (context) => GalponPage(),
               'detalleContenedor':(context) => DetalleContenedorPage(),
-              'cuy'              : (context) => CuyPage()
+              'cuy'              : (context) => CuyPage(),
+              'nacimiento'       : (context) =>NacimientoPage()
             }
             ),
       )

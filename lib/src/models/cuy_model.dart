@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:qowi/src/models/galpon_model.dart';
-
 CuyModel cuyModelFromJson(String str) => CuyModel.fromJson(json.decode(str));
 String cuyModelToJson(CuyModel data) => json.encode(data.toJson());
 class CuyModel{
@@ -12,12 +10,15 @@ class CuyModel{
   DateTime? fechaNacimiento;
   DateTime? fechaMuerte;
   bool? estado;
-  ContenedorModel? contenedor;
+  int? contenedor;
   String? nombre;
+  int? padresId;
 
   CuyModel({this.id, this.color, this.tipo, this.genero,
       this.fechaNacimiento, this.fechaMuerte, this.estado = true,
-    this.contenedor, this.nombre});
+    this.contenedor, this.nombre, this.padresId}){
+    fechaNacimiento = DateTime(2021);
+  }
 
   factory CuyModel.fromJson(Map<String, dynamic> json) => new CuyModel(
     id: json['id'],
@@ -26,18 +27,20 @@ class CuyModel{
     genero: json['genero'],
     estado: json['estado'],
     nombre: json['nombre'],
-    //contenedor: json['contenedor']
+    contenedor: json['contenedor'],
+    padresId: json['padres_id']
   );
   Map<String, dynamic> toJson()=>{
     //id
     'color'     : color,
     'tipo'      : tipo,
     'genero'    : genero,
-    'fecha_nacimiento'  : fechaNacimiento,
+    'fecha_nacimiento'  : fechaNacimiento.toString(),
     'fecha_muerte'      : fechaMuerte,
     'estado'            : estado,
-    'contenedor'         : contenedor!.id,
-    'nombre'            : nombre
+    'contenedor'        : contenedor,
+    'nombre'            : nombre,
+    'padres_id'          : padresId
   };
 
   bool esReproductora(){

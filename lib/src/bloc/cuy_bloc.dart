@@ -1,5 +1,4 @@
 import 'package:qowi/src/models/cuy_model.dart';
-import 'package:qowi/src/models/galpon_model.dart';
 import 'package:qowi/src/providers/cuy_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -27,7 +26,7 @@ class CuyBloc{
     _cuyController.sink.add(cuys);
   }
 
-  void cargarCuysContenedor(ContenedorModel contenedor)async{
+  void cargarCuysContenedor(int contenedor)async{
     final cuys = await _cuyProvider.cargarCuysContenedor(contenedor);
     _cuyController.sink.add(cuys);
   }

@@ -43,7 +43,7 @@ class GalponProvider{
 
 
   //Contenedores
-  Future<List<ContenedorModel>> cargarPosas(GalponModel galpon, String container)async{
+  Future<List<ContenedorModel>> cargarPosasTipo(GalponModel galpon, String container)async{
     await getUser();
     final response = await client.from('contenedor')
         .select()
@@ -67,6 +67,25 @@ class GalponProvider{
 
     return posas;
   }
+  Future<List<ContenedorModel>> cargarContenedores(GalponModel galpon)async{
+    await getUser();
+    final response = await client.from('contenedor')
+      .select()
+      .eq('galpon_id', galpon.id)
+      .execute();
+    final decodedData = response.toJson();
+    final contenedoresData = decodedData['data'];
+
+    List<ContenedorModel> contenedores = [];
+
+    contenedoresData.forEach((element) {
+      final contenedor = ContenedorModel.fromJson(element);
+      contenedores.add(contenedor);
+    });
+
+    return contenedores;
+  }
+
   Future<void> addPosa(GalponModel galpon, ContenedorModel posa, String container) async{
     await getUser();
     final posas = await client.from('contenedor')
@@ -83,6 +102,17 @@ class GalponProvider{
     .insert([{'galpon_id':galpon.id, 'numero':nro, 'tipo':container}])
     .execute();
 
+  }
+  Future<ContenedorModel> getContenedor(int id)async{
+    final response = await client.from('contenedor')
+        .select()
+        .eq('id', id)
+        .execute();
+    final decodedData = response.toJson()['data'];
+
+    final contenedor = ContenedorModel.fromJson(decodedData[0]);
+
+    return contenedor;
   }
 
 

@@ -24,9 +24,9 @@ class GalponModel{
   };
 }
 
-ContenedorModel posaModelFromJson(String str) => ContenedorModel.fromJson(json.decode(str));
+ContenedorModel contenedorModelFromJson(String str) => ContenedorModel.fromJson(json.decode(str));
 
-String posaModelToJson(ContenedorModel data) => json.encode(data.toJson());
+String contenedorModelToJson(ContenedorModel data) => json.encode(data.toJson());
 class ContenedorModel{
   int id;
   int galponId;
@@ -37,39 +37,15 @@ class ContenedorModel{
 
   factory ContenedorModel.fromJson(Map<String, dynamic> json) => new ContenedorModel(
       id              : json["id"],
-      galponId        : json["user_id"],
+      galponId        : json["galpon_id"],
       numero          : json['numero'],
       tipo: json['tipo']
   );
 
   Map<String, dynamic> toJson() => {
-    //"user_id"         : id,
-    "user_id"     : galponId,
+    "id"         : id,
+    "galpon_id"  : galponId,
     "numero"      :numero,
     "tipo"    : tipo
-  };
-}
-
-
-
-String jaulaModelToJson(ContenedorModel data) => json.encode(data.toJson());
-class JaulaModel{
-  int id;
-  int galponId;
-  int numero;
-
-  JaulaModel({this.id = 0, this.galponId = 0, this.numero = 0});
-
-  factory JaulaModel.fromJson(Map<String, dynamic> json) => new JaulaModel(
-    id              : json["id"],
-    galponId        : json["user_id"],
-    numero          : json['numero'],
-  );
-
-  Map<String, dynamic> toJson() => {
-    //"user_id"         : id,
-    "user_id"     : galponId,
-    "numero"      :numero
-
   };
 }

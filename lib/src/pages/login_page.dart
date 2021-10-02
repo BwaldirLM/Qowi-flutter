@@ -11,11 +11,12 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final usuarioProvider = AuthServices.of(context).usuarioProvider;
+    final bloc = new LoginBloc();
 
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
-        children: [_fondo(context, size), _loginForm(context, size, usuarioProvider)],
+        children: [_fondo(context, size), _loginForm(context, size, usuarioProvider, bloc), cargando(bloc)],
       ),
     );
   }
@@ -29,8 +30,8 @@ class LoginPage extends StatelessWidget {
     ]);
   }
 
-  Widget _loginForm(BuildContext context, Size size, UsuarioProvider usuarioProvider) {
-    final bloc = new LoginBloc();
+  Widget _loginForm(BuildContext context, Size size, UsuarioProvider usuarioProvider, LoginBloc bloc) {
+
     return SingleChildScrollView(
         child: Column(
           children: [
@@ -166,8 +167,29 @@ class LoginPage extends StatelessWidget {
   }
 
   _login(BuildContext context, LoginBloc bloc, UsuarioProvider usuarioProvider) async{
+    bloc.cargando(true);
     bool isLogin = await usuarioProvider.signIn(bloc.email, bloc.password);
-    if(isLogin) Navigator.pushReplacementNamed(context, 'home');
+    bloc.cargando(isLogin);
+
+    if(isLogin)
+      Navigator.pushReplacementNamed(context, 'home');
+
+  }
+
+  Widget cargando(LoginBloc bloc) {
+    return Positioned.fill(
+      child: StreamBuilder<bool>(
+        stream: bloc.cargandoStream,
+        initialData: false,
+        builder: (context, snapshot){
+          if(!snapshot.data!) return SizedBox.shrink();
+          else return Container(
+            color: Colors.white30,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        },
+      ),
+    );
   }
 
 

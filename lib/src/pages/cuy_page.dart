@@ -23,18 +23,7 @@ class CuyPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          Positioned(
-          top: -size.height * 0.4,
-            left: -10,
-            child: Container(
-              width: size.height * 0.85 ,
-              height: size.height * 0.85,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(size.height * 0.85),
-                  color: Colors.blue.withOpacity(0.8)
-              ),
-            ),
-          ),
+          _fondo(cuy, size),
           SafeArea(
             child: Column(
               children: [
@@ -45,15 +34,13 @@ class CuyPage extends StatelessWidget {
                     children: [
                       Container(
                         padding: EdgeInsets.all(20),
-                          child: Image(
-                            image: AssetImage('assets/cuy-info.png'),
-                            fit: BoxFit.cover,
-                          )
+                          child: _imagenCuy(cuy),
                       ),
                       _etiquetaNombre(cuy, bloc)
                     ],
                   ),
                 ),
+                Divider(),
                 Container(
                   height: size.height * .4,
                   child: SingleChildScrollView(
@@ -307,6 +294,32 @@ class CuyPage extends StatelessWidget {
       return Text('${fecha.day}-${fecha.month}-${fecha.year}');
     else
       return Icon(Icons.add);
+  }
+
+  Widget _imagenCuy(CuyModel cuy) {
+    if(cuy.esReproductora()) return Image(
+      image: AssetImage('assets/cuy-info.png'),
+      fit: BoxFit.cover,
+    );
+    else return Image(
+      image: AssetImage('assets/cuy_cututu_detalle.png'),
+      fit: BoxFit.cover,
+    );
+  }
+
+  _fondo(CuyModel cuy, Size size) {
+    return Positioned(
+      top: -size.height * 0.4,
+      left: -10,
+      child: Container(
+        width: size.height * 0.85 ,
+        height: size.height * 0.85,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size.height * 0.85),
+            color: cuy.esReproductora()?Colors.blue:Colors.green,
+        ),
+      ),
+    );
   }
 
 }
