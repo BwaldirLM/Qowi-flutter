@@ -34,7 +34,7 @@ class NacimientoPage extends StatelessWidget {
     );
   }
 
-  Widget _elegirGalpon(NacimientoBloc bloc, Size size) {
+  Widget  _elegirGalpon(NacimientoBloc bloc, Size size) {
     return Container(
       //height: size.height*0.4,
       width: double.infinity,
@@ -228,7 +228,8 @@ class NacimientoPage extends StatelessWidget {
                             stream: bloc.cuyMadreStream,
                             builder: (context, snapshot){
                               if(snapshot.hasData){
-                                return Text(snapshot.data!.color??'Sin descripcion');
+                                return Text('descrip');
+                                //return Text(snapshot.data!.color??'Sin descripcion');
                               }else return Center(child: CircularProgressIndicator());
                             },
                           ),
@@ -290,7 +291,7 @@ class NacimientoPage extends StatelessWidget {
                             stream: bloc.cuyPadreStream,
                             builder: (context, snapshot){
                               if(snapshot.hasData){
-                                return Text(snapshot.data!.color??'Sin descripcion');
+                                return Text('data');//Text(snapshot.data!.color??'Sin descripcion');
                               }else return Center(child: CircularProgressIndicator());
                             },
                           ),

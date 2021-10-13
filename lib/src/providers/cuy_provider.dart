@@ -74,6 +74,22 @@ class CuyProvider{
 
   }
 
+  //--Actulizar cuy
+  Future<void> updateCuy(CuyModel cuy)async{
+    final responde = await client.from('cuy')
+        .update(cuy.toJson())
+        .eq('id', cuy.id)
+        .execute();
+    print(responde.data);
+  }
+
+  Future<void> moverCuys(List<CuyModel> lista, ContenedorModel contenedor)async{
+    lista.forEach((cuy)async{
+      cuy.contenedor = contenedor.id;
+      await updateCuy(cuy);
+    });
+  }
+
   Future<List<CuyModel>> cargarCuysMadres()async{
     final response = await client
         .from('cuy')

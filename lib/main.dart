@@ -31,12 +31,12 @@ class MyApp extends StatelessWidget {
             title: 'Qowi',
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              primarySwatch: Colors.blue,
-              appBarTheme: AppBarTheme(
-                color: Colors.transparent,
-                elevation: 0,
-                iconTheme: IconThemeData(color: Colors.black),
-              )
+                primarySwatch: Colors.blue,
+                appBarTheme: AppBarTheme(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  iconTheme: IconThemeData(color: Colors.black),
+                )
             ),
             initialRoute: '/',
             routes: {
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
               'cuy'              : (context) => CuyPage(),
               'nacimiento'       : (context) =>NacimientoPage()
             }
-            ),
+        ),
       )
       ,
     );

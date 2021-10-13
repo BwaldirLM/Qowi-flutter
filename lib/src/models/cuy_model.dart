@@ -4,7 +4,7 @@ CuyModel cuyModelFromJson(String str) => CuyModel.fromJson(json.decode(str));
 String cuyModelToJson(CuyModel data) => json.encode(data.toJson());
 class CuyModel{
   int? id;
-  String? color;
+  Map<String,dynamic>? color;
   String? tipo;
   String? genero;
   DateTime? fechaNacimiento;
@@ -17,7 +17,12 @@ class CuyModel{
   CuyModel({this.id, this.color, this.tipo, this.genero,
       this.fechaNacimiento, this.fechaMuerte, this.estado = true,
     this.contenedor, this.nombre, this.padresId}){
-    fechaNacimiento = DateTime(2021);
+    if(fechaNacimiento == null) fechaNacimiento = DateTime(2021);
+    if(color == null) color = {
+      'principal'  : '',
+      'secundario' : 'ninguno'
+
+    };
   }
 
   factory CuyModel.fromJson(Map<String, dynamic> json) => new CuyModel(
@@ -25,6 +30,7 @@ class CuyModel{
     color: json['color'],
     tipo: json['tipo'],
     genero: json['genero'],
+    fechaNacimiento: DateTime.parse(json['fecha_nacimiento']??'2021-01-01'),
     estado: json['estado'],
     nombre: json['nombre'],
     contenedor: json['contenedor'],

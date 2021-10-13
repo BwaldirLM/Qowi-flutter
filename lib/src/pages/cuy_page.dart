@@ -10,7 +10,8 @@ class CuyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cuy = ModalRoute.of(context)!.settings.arguments as CuyModel;
-    final respaldo = cuy;
+    final respaldo = CuyModel.fromJson(cuy.toJson());
+    //final respaldo = cuy;
     //final cuy = CuyModel();
     //cuy.nombre = 'Benito';
     //cuy.fechaNacimiento = DateTime.now();
@@ -47,25 +48,7 @@ class CuyPage extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 40),
                       child: Column(
                         children: [
-                          Container(
-                            margin: EdgeInsets.all(20),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text('Color', style: subtittle),
-                                SizedBox(width: 100,),
-                                SizedBox(
-                                  child: Column(
-                                    children: [
-                                      Text('Marron'),
-                                      Text('Blanco')
-                                    ],
-                                  ),
-                                ),
-                                Icon(Icons.edit, color: Colors.black45)
-                              ],
-                            ),
-                          ),
+                          _definirColor(bloc, size, cuy, subtittle),
                           Container(
                             margin: EdgeInsets.all(15),
                             child: Row(
@@ -176,14 +159,17 @@ class CuyPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   FloatingActionButton(
-                    onPressed: null,
+                    onPressed: (){
+                      bloc.noEditar();
+                      bloc.updateCuy(cuy);
+                    },
                     child: Icon(Icons.save_outlined),
                   ),
                   FloatingActionButton(
                     onPressed: () {
                       bloc.noEditar();
                       print(respaldo.nombre);
-                      bloc.cargarCuy(cuy);
+                      bloc.cargarCuy(respaldo);
                     },
                     child: Icon(Icons.cancel),
 
@@ -301,10 +287,14 @@ class CuyPage extends StatelessWidget {
       image: AssetImage('assets/cuy-info.png'),
       fit: BoxFit.cover,
     );
-    else return Image(
+    else if( cuy.esPadrillo())return Image(
       image: AssetImage('assets/cuy_cututu_detalle.png'),
       fit: BoxFit.cover,
     );
+    else return Image(
+        image: AssetImage('assets/cuy_cria.png'),
+        fit: BoxFit.cover,
+      ); 
   }
 
   _fondo(CuyModel cuy, Size size) {
@@ -316,10 +306,255 @@ class CuyPage extends StatelessWidget {
         height: size.height * 0.85,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(size.height * 0.85),
-            color: cuy.esReproductora()?Colors.blue:Colors.green,
+            color: _colorFondo(cuy),
         ),
       ),
     );
+  }
+
+  Widget _definirColor(EditarCuyBLoc bloc, Size size,CuyModel cuy ,TextStyle subtittle) {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Text('Color', style: subtittle),
+          SizedBox(width: 100,),
+          StreamBuilder<CuyModel>(
+            stream: bloc.cuyStream,
+              initialData: cuy,
+              builder: (context, snapshot){
+              final colores = snapshot.data!.color;
+                return SizedBox(
+                  child: Column(
+                    children: [
+                      Text('${colores!['principal']}'),
+                      Text('${colores['secundario']}'),
+                    ],
+                  ),
+                );
+              }
+          ),
+          StreamBuilder<bool>(
+            stream: bloc.editarCuyStream,
+            builder: (context, snapshot){
+              return IconButton(
+                  onPressed: (){
+                    bloc.editar();
+                    showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context){
+                          return StreamBuilder<CuyModel>(
+                              stream: bloc.cuyStream,
+                              initialData: cuy,
+                              builder: (context, snapshot){
+                                final cuyTemp = snapshot.data;
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+                                  title: Text('Seleccionar color'),
+                                  content: Container(
+                                    height: size.height*0.4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Color principal: ${cuyTemp!.color!['principal']}'),
+                                          Text('Color secundario: ${cuyTemp.color!['secundario']}'),
+                                          Divider(),
+                                          Text('Color principal'),
+                                          Container(
+                                            margin: EdgeInsets.all(2),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                InkWell(
+                                                  onTap:()=> cuyTemp.color!['principal']='blanco',
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(color: Colors.black),
+                                                        color: Colors.white,
+                                                        borderRadius: BorderRadius.circular(5)
+                                                    ),
+                                                    child: Text('Blanco', style: TextStyle(fontWeight: FontWeight.w700),),
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap:()=> cuyTemp.color!['principal']='castaño',
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                        border: Border.all(color: Color.fromRGBO(163, 87, 9, 1)),
+                                                        color: Color.fromRGBO(163, 87, 9, 1),
+                                                        borderRadius: BorderRadius.circular(5)
+                                                    ),
+                                                    child: Text('Castaño', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                  ),
+                                                ),
+
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Color(0xFFFFFF00),
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Bayo', style: TextStyle(fontWeight: FontWeight.w700)),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(2),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.black),
+                                                      color: Colors.black,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Negro', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Colors.grey,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Plomo', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Colors.brown,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Chiqchipa', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white)),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          Text('Color secundario'),
+                                          Container(
+                                            margin: EdgeInsets.all(2),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.black),
+                                                      color: Colors.white,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Blanco', style: TextStyle(fontWeight: FontWeight.w700),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Color.fromRGBO(163, 87, 9, 1)),
+                                                      color: Color.fromRGBO(163, 87, 9, 1),
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Castaño', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Color(0xFFFFFF00),
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Bayo', style: TextStyle(fontWeight: FontWeight.w700)),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(2),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.black),
+                                                      color: Colors.black,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Negro', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Colors.grey,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Plomo', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white),),
+                                                ),
+                                                Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: Colors.brown),
+                                                      color: Colors.brown,
+                                                      borderRadius: BorderRadius.circular(5)
+                                                  ),
+                                                  child: Text('Chiqchipa', style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white)),
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.all(3),
+                                            padding: EdgeInsets.all(5),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.black),
+                                                borderRadius: BorderRadius.circular(5)
+                                            ),
+                                            child: Text('Ninguno', style: TextStyle(fontWeight: FontWeight.w700),),
+                                          ),
+
+                                        ],
+                                      )
+                                  ),
+                                  actions: <Widget>[
+                                    ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancelar')),
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          //bloc.cambiarNombre(cuyTemp);
+                                          Navigator.of(context).pop();
+                                        }
+                                        , child: Text('Ok')),
+                                  ],
+                                );
+                              }
+                          );
+                        }
+                    ).then((value) => print(value));
+                  },
+                  icon: Icon(Icons.edit, color: Colors.black45)
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Color _colorFondo(CuyModel cuy) {
+    if(cuy.esReproductora()) return Colors.blue;
+    else if(cuy.esPadrillo()) return Colors.green;
+    else return Color.fromRGBO(202, 184, 255, 1);
   }
 
 }

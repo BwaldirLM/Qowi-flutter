@@ -1,9 +1,12 @@
 import 'package:qowi/src/models/cuy_model.dart';
+import 'package:qowi/src/providers/cuy_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EditarCuyBLoc{
   final _editarCuyBloc = BehaviorSubject<bool>();
   final _cuyBloc = BehaviorSubject<CuyModel>();
+
+  final _cuyProvider = CuyProvider();
 
   Stream<bool> get editarCuyStream => _editarCuyBloc.stream;
   Stream<CuyModel> get cuyStream => _cuyBloc.stream;
@@ -24,6 +27,10 @@ class EditarCuyBLoc{
 
   void cambiarNombre(CuyModel? cuy){
     _cuyBloc.sink.add(cuy!);
+  }
+
+  void updateCuy(CuyModel cuy){
+    _cuyProvider.updateCuy(cuy);
   }
 
   dispose(){
