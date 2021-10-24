@@ -18,6 +18,7 @@ class CuyProvider{
           '*, galpon(*,contenedor(*, cuy(*)))'
         )
         .eq('user_id', user.id)
+
         .execute();
 
     final decodedData = response.toJson();
@@ -32,7 +33,7 @@ class CuyProvider{
         final cuys = element['cuy'];
         cuys.forEach((cuy){
           final cuyTemp = CuyModel.fromJson(cuy);
-          cuysList.add(cuyTemp);
+          if(cuyTemp.estado!) cuysList.add(cuyTemp);
 
         });
       });
@@ -50,6 +51,7 @@ class CuyProvider{
         .from('cuy')
         .select()
         .eq('contenedor', contenedor)
+        .eq('estado', true)
         .execute();
 
     final decodedData = response.toJson();
@@ -115,6 +117,7 @@ class CuyProvider{
         .select()
         .eq('contenedor', contenedor.id)
         .eq('tipo', 'reproductora')
+        .eq('estado', true)
         .execute();
     final decodedData = response.toJson();
     final cuysData = decodedData['data'];

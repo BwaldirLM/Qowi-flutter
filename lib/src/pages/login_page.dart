@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:qowi/src/bloc/login_bloc.dart';
 
 import 'package:qowi/src/disenos/curvas.dart';
+import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
 import 'package:qowi/src/providers/usuario_provider.dart';
 import 'package:qowi/src/services/auth_services.dart';
 
@@ -12,11 +13,12 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final usuarioProvider = AuthServices.of(context).usuarioProvider;
     final bloc = new LoginBloc();
+    final prefs = PreferenciasUsuario();
 
     final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
-        children: [_fondo(context, size), _loginForm(context, size, usuarioProvider, bloc), cargando(bloc)],
+        children: [_fondo(context, size), _loginForm(context, size, usuarioProvider, bloc, prefs), cargando(bloc)],
       ),
     );
   }
@@ -30,7 +32,7 @@ class LoginPage extends StatelessWidget {
     ]);
   }
 
-  Widget _loginForm(BuildContext context, Size size, UsuarioProvider usuarioProvider, LoginBloc bloc) {
+  Widget _loginForm(BuildContext context, Size size, UsuarioProvider usuarioProvider, LoginBloc bloc, PreferenciasUsuario prefs) {
 
     return SingleChildScrollView(
         child: Column(
@@ -63,6 +65,7 @@ class LoginPage extends StatelessWidget {
                           ]),
                       child: StreamBuilder(
                           stream: bloc.emailStream,
+                          initialData: prefs.email,
                           builder: (context,AsyncSnapshot<String> snapshot) {
                             return TextField(
                               keyboardType: TextInputType.emailAddress,
@@ -98,6 +101,7 @@ class LoginPage extends StatelessWidget {
                           ]),
                       child: StreamBuilder(
                           stream: bloc.passwordStream,
+                          initialData: prefs.password,
                           builder: (context, snapshot) {
                             return TextField(
                               obscureText: true,
@@ -136,7 +140,7 @@ class LoginPage extends StatelessWidget {
                           stream: bloc.formValidStream,
                           builder: (context, snapshot) {
                             return IconButton(
-                                onPressed: snapshot.hasData? () => _login(context, bloc, usuarioProvider):null,
+                                onPressed: snapshot.hasData? () => _login(context, bloc, usuarioProvider, prefs):null,
                                 icon: Icon(
                                   Icons.arrow_forward_rounded,
                                   size: 35,
@@ -166,7 +170,8 @@ class LoginPage extends StatelessWidget {
         ));
   }
 
-  _login(BuildContext context, LoginBloc bloc, UsuarioProvider usuarioProvider) async{
+  _login(BuildContext context, LoginBloc bloc, UsuarioProvider usuarioProvider, PreferenciasUsuario prefs) async{
+    _saveUser(bloc, context, prefs);
     bloc.cargando(true);
     bool isLogin = await usuarioProvider.signIn(bloc.email, bloc.password);
     bloc.cargando(isLogin);
@@ -192,5 +197,28 @@ class LoginPage extends StatelessWidget {
     );
   }
 
+
+}
+
+void _saveUser(LoginBloc bloc, BuildContext context, PreferenciasUsuario prefs) {
+  if(prefs.email!=null && prefs.password !=null){
+    showDialog(
+        context: context,
+        builder: (context){
+          return AlertDialog(
+            title: Text('¿Desea guardar correo y contraseña?'),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            actions: [
+              ElevatedButton(onPressed: () => Navigator.pop(context), child: Text('Cancelar')),
+              ElevatedButton(onPressed: (){
+                prefs.email = bloc.email;
+                prefs.password = bloc.password;
+                Navigator.pop(context);
+              }, child: Text('Aceptar'))
+            ],
+          );
+        }
+    );
+  }
 
 }

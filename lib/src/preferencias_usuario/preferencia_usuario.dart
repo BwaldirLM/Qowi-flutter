@@ -38,6 +38,21 @@ class PreferenciasUsuario {
   set username(String value){
     _prefs.setString('username', value);
   }
+  //Correo
+  String get email{
+    return _prefs.getString('email')??'';
+  }
+  set email(String value){
+    _prefs.setString('email', value);
+  }
+
+  //Contraseña
+  String get password{
+    return _prefs.getString('password')??'';
+  }
+  set password(String value){
+    _prefs.setString('password', value);
+  }
 
   void clear(){
     _prefs.clear();
