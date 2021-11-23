@@ -67,7 +67,9 @@ class LoginPage extends StatelessWidget {
                           stream: bloc.emailStream,
                           initialData: prefs.email,
                           builder: (context,AsyncSnapshot<String> snapshot) {
-                            return TextField(
+                            if(prefs.email.isNotEmpty) bloc.setEmail(snapshot.data!);
+                            return TextFormField(
+                              initialValue: snapshot.data,
                               keyboardType: TextInputType.emailAddress,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -80,10 +82,7 @@ class LoginPage extends StatelessWidget {
                             );
                           }
                       ),
-
                     ),
-
-
                     Container(
                       width: size.width * 0.85,
                       margin: EdgeInsets.only(right: size.height * 0.1),
@@ -99,11 +98,13 @@ class LoginPage extends StatelessWidget {
                                 offset: Offset(0, 5),
                                 spreadRadius: 3)
                           ]),
-                      child: StreamBuilder(
+                      child: StreamBuilder<String>(
                           stream: bloc.passwordStream,
                           initialData: prefs.password,
                           builder: (context, snapshot) {
-                            return TextField(
+                            if(prefs.password.isNotEmpty) bloc.setPassword(snapshot.data!);
+                            return TextFormField(
+                              initialValue: snapshot.data,
                               obscureText: true,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -150,6 +151,19 @@ class LoginPage extends StatelessWidget {
                 )
               ],
             ),
+            Row(
+              children: [
+                StreamBuilder<bool>(
+                  stream: bloc.recordarStream,
+                  initialData: false,
+                  builder: (_, snapshot){
+                    bloc.recordar(snapshot.data!);
+                    return Checkbox(value: snapshot.data, onChanged: (value) => bloc.recordar(value!));
+                  },
+                ),
+                Text('Deseo recordar este usuario')
+              ],
+            ),
             SizedBox(
               height: 150,
             ),
@@ -171,10 +185,15 @@ class LoginPage extends StatelessWidget {
   }
 
   _login(BuildContext context, LoginBloc bloc, UsuarioProvider usuarioProvider, PreferenciasUsuario prefs) async{
-    _saveUser(bloc, context, prefs);
+
     bloc.cargando(true);
     bool isLogin = await usuarioProvider.signIn(bloc.email, bloc.password);
+    if(bloc.save){
+      prefs.email = bloc.email;
+      prefs.password = bloc.password;
+    }
     bloc.cargando(isLogin);
+    bloc.cargando(false);
 
     if(isLogin)
       Navigator.pushReplacementNamed(context, 'home');
@@ -196,29 +215,4 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
-
-
-}
-
-void _saveUser(LoginBloc bloc, BuildContext context, PreferenciasUsuario prefs) {
-  if(prefs.email!=null && prefs.password !=null){
-    showDialog(
-        context: context,
-        builder: (context){
-          return AlertDialog(
-            title: Text('¿Desea guardar correo y contraseña?'),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            actions: [
-              ElevatedButton(onPressed: () => Navigator.pop(context), child: Text('Cancelar')),
-              ElevatedButton(onPressed: (){
-                prefs.email = bloc.email;
-                prefs.password = bloc.password;
-                Navigator.pop(context);
-              }, child: Text('Aceptar'))
-            ],
-          );
-        }
-    );
-  }
-
 }

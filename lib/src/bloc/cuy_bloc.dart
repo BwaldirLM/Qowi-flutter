@@ -9,7 +9,7 @@ class CuyBloc{
   final _madresController = BehaviorSubject<List<CuyModel>>();
   final _contadorController = BehaviorSubject<int>();
   final _tipoController = BehaviorSubject<String>();
-  final _sellecionarController = BehaviorSubject<bool>();
+  final _selecionarController = BehaviorSubject<bool>();
   final _galponController = BehaviorSubject<List<GalponModel>>();
   final _contenedoresController = BehaviorSubject<List<ContenedorModel>>();
   final _contenedorController = BehaviorSubject<ContenedorModel>();
@@ -22,7 +22,7 @@ class CuyBloc{
   Stream<List<CuyModel>> get cuyMadreSytream => _madresController.stream;
   Stream<int> get contadorStream => _contadorController.stream;
   Stream<String> get tipoStream => _tipoController.stream;
-  Stream<bool> get seleccionarStream => _sellecionarController.stream;
+  Stream<bool> get seleccionarStream => _selecionarController.stream;
   Stream<List<GalponModel>> get galponStream => _galponController.stream;
   Stream<List<ContenedorModel>> get contenedoresStream => _contenedoresController.stream;
   Stream<ContenedorModel> get contenedorStream =>_contenedorController.stream;
@@ -65,7 +65,7 @@ class CuyBloc{
   }
 
   void changeSeleccionar(bool seleccionar){
-    _sellecionarController.sink.add(seleccionar);
+    _selecionarController.sink.add(seleccionar);
   }
 
   void cargarGalpones()async{
@@ -95,7 +95,7 @@ class CuyBloc{
     _madresController.close();
     _contadorController.close();
     _tipoController.close();
-    _sellecionarController.close();
+    _selecionarController.close();
     _galponController.close();
     _contenedoresController.close();
     _contenedorController.close();

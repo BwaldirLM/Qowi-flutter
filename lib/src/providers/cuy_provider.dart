@@ -82,7 +82,6 @@ class CuyProvider{
         .update(cuy.toJson())
         .eq('id', cuy.id)
         .execute();
-    print(responde.data);
   }
 
   Future<void> moverCuys(List<CuyModel> lista, ContenedorModel contenedor)async{

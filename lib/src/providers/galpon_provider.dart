@@ -40,6 +40,21 @@ class GalponProvider{
     return galpones;
   }
 
+  Future<List> cargarGalponesData() async{
+    final user = await getUser();
+    final response = await client
+        .from('app_users')
+        .select(
+        '*, galpon(*,contenedor(*))'
+    )
+        .eq('user_id', user.id)
+
+        .execute();
+    final decodedData  = response.toJson();
+    final galponesData = decodedData['data'][0];
+    return galponesData['galpon'];
+  }
+
 
 
   //Contenedores
