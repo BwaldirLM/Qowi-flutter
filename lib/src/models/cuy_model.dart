@@ -42,7 +42,7 @@ class CuyModel{
     'tipo'      : tipo,
     'genero'    : genero,
     'fecha_nacimiento'  : fechaNacimiento.toString(),
-    'fecha_muerte'      : fechaMuerte,
+    'fecha_muerte'      : fechaMuerte==null?fechaMuerte:fechaMuerte.toString(),
     'estado'            : estado,
     'contenedor'        : contenedor,
     'nombre'            : nombre,

@@ -9,9 +9,22 @@ class Carrito with ChangeNotifier{
   int get cantidad => _carrito.length;
 
   void agregar(CuyModel cuy){
-    if(!_carrito.contains(cuy)) {
+    if(!contains(cuy)) {
       _carrito.add(cuy);
       notifyListeners();
     }
+  }
+  bool contains(CuyModel cuy){
+    bool exist = false;
+    _carrito.forEach((cuyItem) {
+      if(cuyItem.id! == cuy.id!)
+        exist = true;
+    });
+    return exist;
+  }
+
+  void delete(CuyModel cuy) {
+    _carrito.remove(cuy);
+    notifyListeners();
   }
 }

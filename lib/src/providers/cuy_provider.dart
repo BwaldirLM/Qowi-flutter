@@ -78,7 +78,7 @@ class CuyProvider{
 
   //--Actulizar cuy
   Future<void> updateCuy(CuyModel cuy)async{
-    final responde = await client.from('cuy')
+    final response = await client.from('cuy')
         .update(cuy.toJson())
         .eq('id', cuy.id)
         .execute();
@@ -158,6 +158,14 @@ class CuyProvider{
       });
     }
     return cuys;
+
+  }
+
+  Future<void> newIncidencia(CuyModel cuy, String incidencia) async {
+    final response = await client.from('incidencia_muerte').
+          insert([{'descripcion': incidencia, 'cuy_id':cuy.id}])
+          .execute();
+    await updateCuy(cuy);
 
   }
 

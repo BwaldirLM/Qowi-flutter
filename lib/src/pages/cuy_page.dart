@@ -11,16 +11,11 @@ class CuyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final cuy = ModalRoute.of(context)!.settings.arguments as CuyModel;
     final respaldo = CuyModel.fromJson(cuy.toJson());
-    //final respaldo = cuy;
-    //final cuy = CuyModel();
-    //cuy.nombre = 'Benito';
-    //cuy.fechaNacimiento = DateTime.now();
-    //cuy.tipo = 'padrillo';
     final size = MediaQuery.of(context).size;
     final subtittle = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
     final bloc = EditarCuyBLoc();
     bloc.cargarCuy(cuy);
-    
+
     return Scaffold(
       body: Stack(
         children: [
@@ -142,7 +137,9 @@ class CuyPage extends StatelessWidget {
                 ],
               ),
             ),
-          )
+          ),
+          _menu(size, bloc),
+          _acciones(size, bloc, cuy)
         ],
       ),
       floatingActionButton: StreamBuilder<bool>(
@@ -154,7 +151,7 @@ class CuyPage extends StatelessWidget {
               child: Icon(Icons.close),
             );
           }else{
-            if(snapshot.data == true){
+            if(snapshot.data!){
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -294,7 +291,7 @@ class CuyPage extends StatelessWidget {
     else return Image(
         image: AssetImage('assets/cuy_cria.png'),
         fit: BoxFit.cover,
-      ); 
+      );
   }
 
   _fondo(CuyModel cuy, Size size) {
@@ -555,6 +552,147 @@ class CuyPage extends StatelessWidget {
     if(cuy.esReproductora()) return Colors.blue;
     else if(cuy.esPadrillo()) return Colors.green;
     else return Color.fromRGBO(202, 184, 255, 1);
+  }
+
+  Widget _menu(Size size, EditarCuyBLoc bloc) {
+    return StreamBuilder<bool>(
+      stream: bloc.editarCuyStream,
+      initialData: false,
+      builder: (context, snapshot){
+        if(snapshot.data!) return SizedBox.shrink();
+        else return Positioned(
+            bottom: size.height * 0.02,
+            right: size.width * 0.015,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(15),
+              child: Container(
+                height: 60,
+                width: 60,
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    shape: BoxShape.circle
+                ),
+                child: Icon(Icons.menu, size: 40),
+              ),
+              onTap: (){
+                bloc.cambiarMenu(true);
+              },
+            )
+        );
+      },
+    );
+  }
+
+  Widget _acciones(Size size, EditarCuyBLoc bloc, CuyModel cuy) {
+    return StreamBuilder<bool>(
+      stream: bloc.menuStream,
+        initialData: false,
+        builder: (context, snapshot){
+          if(snapshot.data!) return Container(
+            height: size.height,
+            width: size.width,
+            decoration: BoxDecoration(
+                //color: Colors.blueAccent,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.white, Colors.blueAccent]
+              )
+            ),
+            child: Container(
+              padding: EdgeInsets.all(15),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Spacer(),
+                  _accion('Vender'),
+                  GestureDetector(
+                    child: _accion('Reportar muerte'),
+                    onTap: (){
+                      late String incidencia;
+                      showDialog(
+                          context: context,
+                          builder: (context){
+                            return AlertDialog(
+                              title: Text('Incidencia de muerte'),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              content: StreamBuilder<String>(
+                                stream: bloc.incidenciaStream,
+                                initialData: 'repentina',
+                                builder: (context, snapshot){
+                                  incidencia = snapshot.data!;
+                                  return DropdownButton(
+                                    value: snapshot.data,
+                                    items: [
+                                      DropdownMenuItem(
+                                        child: Text('Al nacer'),
+                                        value: 'murio al nacer',
+                                      ),
+                                      DropdownMenuItem(
+                                        child: Text('Al parir'),
+                                        value: 'pariendo',
+                                      ),
+                                      DropdownMenuItem(
+                                        child: Text('Repentina'),
+                                        value: 'repentina',
+                                      )
+                                    ],
+                                    onChanged: (opt){
+                                      bloc.changeIncidencia(opt as String);
+                                      incidencia = opt;
+                                    },
+                                  );
+                                },
+                              ),
+                              actions: [
+                                TextButton(
+                                    onPressed: (){
+                                      cuy.fechaMuerte = DateTime.now();
+                                      cuy.estado = false;
+                                      bloc.newIncidencia(cuy,incidencia);
+                                      Navigator.of(context).popUntil(ModalRoute.withName('galpon'));
+                                    },
+                                    child: Text('Reportar')
+                                )
+                              ],
+                            );
+                          }
+                      );
+                    },
+                  ),
+                  InkWell(
+                    onTap: () => bloc.cambiarMenu(false),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      margin: EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.cyanAccent,
+                        border: Border.all(color: Colors.cyan,),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Text('Cerrar', style: TextStyle(fontWeight: FontWeight.w700),),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+          else return SizedBox.shrink();
+        }
+    );
+  }
+
+  Widget _accion(String accion) {
+    return Container(
+      padding: EdgeInsets.all(10),
+     margin: EdgeInsets.symmetric(vertical: 6),
+     decoration: BoxDecoration(
+       color: Colors.white,
+       border: Border.all(color: Colors.cyan,),
+       borderRadius: BorderRadius.circular(15),
+     ),
+      child: Text(accion, style: TextStyle(fontWeight: FontWeight.w700),),
+    );
   }
 
 }

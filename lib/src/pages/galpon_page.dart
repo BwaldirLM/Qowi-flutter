@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:qowi/src/bloc/cuy_bloc.dart';
 import 'package:qowi/src/bloc/galpon_bloc.dart';
 import 'package:qowi/src/models/cuy_model.dart';
 import 'package:qowi/src/models/galpon_model.dart';
+import 'package:qowi/src/providermodels/carrito_model.dart';
+import 'package:qowi/src/widgets/carrito_widget.dart';
 import 'package:qowi/src/widgets/menu_flow.dart';
 
 
@@ -16,6 +19,8 @@ class GalponPage extends StatelessWidget {
     final _textStyle = TextStyle(fontSize: 18, color: Colors.black54, fontWeight: FontWeight.w700);
     final  galpon = ModalRoute.of(context)!.settings.arguments as GalponModel;
     final _galponBloc = GalponBloc();
+
+    final carrito  = Provider.of<Carrito>(context);
 
     final size = MediaQuery.of(context).size;
 
@@ -39,9 +44,11 @@ class GalponPage extends StatelessWidget {
                ],
              ),
            ),
-           body: TabBarView(
-               children:[
-                Container(
+           body: Stack(
+             children: [
+               TabBarView(
+                   children:[
+                     Container(
                        color: Colors.white54,
                        height: size.height * 0.83 - kToolbarHeight,
                        child: StreamBuilder<List<ContenedorModel>>(
@@ -120,87 +127,96 @@ class GalponPage extends StatelessWidget {
                          },
                        ),
                      ),
-                 //JAULAS
-                 Container(
-                   color: Colors.white54,
-                   height: size.height * 0.83 - kToolbarHeight,
-                   child: StreamBuilder<List<ContenedorModel>>(
-                     stream: _galponBloc.jaulaStream,
-                     builder: (context, snapshot){
-                       if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
-                       else{
-                         return GridView.builder(
-                             scrollDirection: Axis.vertical,
-                             shrinkWrap: true,
-                             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                               maxCrossAxisExtent: size.height * 0.3,
-                               childAspectRatio: 2/3,
-                               crossAxisSpacing: 15,
-                               mainAxisSpacing: 15,
-                             ),
-                             itemCount: snapshot.data!.length,
-                             itemBuilder: (context, index){
-                               final cuyBloc = CuyBloc();
-                               cuyBloc.cargarCuysContenedor(snapshot.data![index].id);
-                               return GestureDetector(
-                                   onTap: () => Navigator.pushNamed(context, 'detalleContenedor', arguments: snapshot.data![index]),
-                                   child: Container(
-                                     margin: EdgeInsets.all(15),
-                                     padding: EdgeInsets.all(10),
-                                     decoration: BoxDecoration(
-                                         color: Colors.yellow.withOpacity(0.9),
-                                         borderRadius: BorderRadius.circular(15),
-                                         border: Border.all(
-                                             color: Colors.yellowAccent,
-                                             width: 5
+                     //JAULAS
+                     Container(
+                       color: Colors.white54,
+                       height: size.height * 0.83 - kToolbarHeight,
+                       child: StreamBuilder<List<ContenedorModel>>(
+                         stream: _galponBloc.jaulaStream,
+                         builder: (context, snapshot){
+                           if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
+                           else{
+                             return GridView.builder(
+                                 scrollDirection: Axis.vertical,
+                                 shrinkWrap: true,
+                                 gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                                   maxCrossAxisExtent: size.height * 0.3,
+                                   childAspectRatio: 2/3,
+                                   crossAxisSpacing: 15,
+                                   mainAxisSpacing: 15,
+                                 ),
+                                 itemCount: snapshot.data!.length,
+                                 itemBuilder: (context, index){
+                                   final cuyBloc = CuyBloc();
+                                   cuyBloc.cargarCuysContenedor(snapshot.data![index].id);
+                                   return GestureDetector(
+                                       onTap: () => Navigator.pushNamed(context, 'detalleContenedor', arguments: snapshot.data![index]),
+                                       child: Container(
+                                         margin: EdgeInsets.all(15),
+                                         padding: EdgeInsets.all(10),
+                                         decoration: BoxDecoration(
+                                             color: Colors.yellow.withOpacity(0.9),
+                                             borderRadius: BorderRadius.circular(15),
+                                             border: Border.all(
+                                                 color: Colors.yellowAccent,
+                                                 width: 5
+                                             ),
+                                             boxShadow: [
+                                               BoxShadow(
+                                                   color: Colors.black26,
+                                                   blurRadius: 4,
+                                                   spreadRadius: 2,
+                                                   offset: Offset(4, 4)
+                                               )
+                                             ]
                                          ),
-                                         boxShadow: [
-                                           BoxShadow(
-                                               color: Colors.black26,
-                                               blurRadius: 4,
-                                               spreadRadius: 2,
-                                               offset: Offset(4, 4)
-                                           )
-                                         ]
-                                     ),
-                                     child: Column(
-                                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                       children: [
-                                         SizedBox(height: 20),
-                                         Container(
-                                           padding: EdgeInsets.all(8),
-                                           decoration: BoxDecoration(
-                                               color: Colors.cyanAccent,
-                                               borderRadius: BorderRadius.circular(15)
-                                           ),
-                                           child: Text(
-                                             snapshot.data![index].numero.toString(),
-                                             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                                           ),
+                                         child: Column(
+                                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                           children: [
+                                             SizedBox(height: 20),
+                                             Container(
+                                               padding: EdgeInsets.all(8),
+                                               decoration: BoxDecoration(
+                                                   color: Colors.cyanAccent,
+                                                   borderRadius: BorderRadius.circular(15)
+                                               ),
+                                               child: Text(
+                                                 snapshot.data![index].numero.toString(),
+                                                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                                               ),
+                                             ),
+                                             Text('Cantidad de cuys'),
+                                             StreamBuilder<List<CuyModel>>(
+                                               stream: cuyBloc.cuyStream,
+                                               builder: (context, snapshot){
+                                                 if(snapshot.hasData){
+                                                   final galpon = snapshot.data as List<CuyModel>;
+                                                   return Text('${galpon.length}');
+                                                 }
+                                                 else return CircularProgressIndicator();
+                                               },
+                                             ),
+                                             SizedBox(height: 25,)
+                                           ],
                                          ),
-                                         Text('Cantidad de cuys'),
-                                         StreamBuilder<List<CuyModel>>(
-                                           stream: cuyBloc.cuyStream,
-                                           builder: (context, snapshot){
-                                             if(snapshot.hasData){
-                                               final galpon = snapshot.data as List<CuyModel>;
-                                               return Text('${galpon.length}');
-                                             }
-                                             else return CircularProgressIndicator();
-                                           },
-                                         ),
-                                         SizedBox(height: 25,)
-                                       ],
-                                     ),
-                                   )
-                               );
-                             }
-                         );
-                       }
-                     },
-                   ),
-                 ),
-               ]
+                                       )
+                                   );
+                                 }
+                             );
+                           }
+                         },
+                       ),
+                     ),
+                   ]
+               ),
+               carrito.cantidad!=0?
+                 Positioned(
+                   bottom: 25,
+                   left: 25,
+                   child: CarritoVenta(carrito: carrito.carrito,),
+                 ):SizedBox.shrink(),
+
+             ],
            ),
            floatingActionButton: FlowMenu(
              children: [
@@ -232,7 +248,7 @@ class GalponPage extends StatelessWidget {
          )
     );
   }
-
+//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
 
 
   

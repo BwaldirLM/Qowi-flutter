@@ -1,10 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qowi/src/bloc/cuy_bloc.dart';
 import 'package:qowi/src/bloc/seleccion_bloc.dart';
 import 'package:qowi/src/models/cuy_model.dart';
 import 'package:qowi/src/models/galpon_model.dart';
+import 'package:qowi/src/providermodels/carrito_model.dart';
+import 'package:qowi/src/widgets/carrito_widget.dart';
 import 'package:qowi/src/widgets/cuy_item.dart';
 import 'package:qowi/src/widgets/menu_flow.dart';
 import 'package:qowi/src/widgets/resumen.dart';
@@ -21,6 +24,7 @@ class DetalleContenedorPage extends StatelessWidget {
     cuyBloc.cargarCuysContenedor(contenedor.id);
     late List<CuyModel> listSeleccionado;
     late  List<GlobalKey<CuyItemState>> _cuyItemKeyList;
+    final carrito = Provider.of<Carrito>(context);
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder<bool>(
@@ -80,49 +84,59 @@ class DetalleContenedorPage extends StatelessWidget {
 
         ],
       ),
-      body: StreamBuilder(
-        stream: cuyBloc.cuyStream,
-        builder: (BuildContext context, AsyncSnapshot<List<CuyModel>> snapshot){
-          if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
-          else{
-            if(snapshot.data!.isEmpty) return Center(child: Text('No hay cuys'));
-            else{
-              final cuyList = snapshot.data!;
-              _cuyItemKeyList = List.generate(cuyList.length, (index) => GlobalKey<CuyItemState>());
-              return StreamBuilder<bool>(
-                stream: cuyBloc.seleccionarStream,
-                  initialData: false,
-                  builder: (_, snapshot){
-                    return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: size.height * .2,
-                          childAspectRatio: 2/3,
-                          crossAxisSpacing: 10,
-                          mainAxisSpacing: 10,
-                        ),
-                        itemCount: cuyList.length,
-                        itemBuilder: (context, index){
-                          final cuy = cuyList[index];
-                          return CuyItem(
-                            key: _cuyItemKeyList[index],
-                            cuy: cuy,
-                            seleccionar: snapshot.data!,
-                            onLongPress: () {
-                             if(!snapshot.data!){
-                                cuyBloc.changeSeleccionar(true);
-                                _cuyItemKeyList[index].currentState!.isSelected = true;
-                                _cuyItemKeyList[index].currentState!.color = Color(0xFFDCEDC8);
-                             }
-                              //_cuyKey.currentState!.seleccionar = true;
-                            },
-                          );
-                        }
-                    );
-                  }
-              );
-            }
-          }
-        },
+      body: Stack(
+        children: [
+          StreamBuilder(
+            stream: cuyBloc.cuyStream,
+            builder: (BuildContext context, AsyncSnapshot<List<CuyModel>> snapshot){
+              if(!snapshot.hasData) return Center(child: CircularProgressIndicator());
+              else{
+                if(snapshot.data!.isEmpty) return Center(child: Text('No hay cuys'));
+                else{
+                  final cuyList = snapshot.data!;
+                  _cuyItemKeyList = List.generate(cuyList.length, (index) => GlobalKey<CuyItemState>());
+                  return StreamBuilder<bool>(
+                      stream: cuyBloc.seleccionarStream,
+                      initialData: false,
+                      builder: (_, snapshot){
+                        return GridView.builder(
+                            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: size.height * .2,
+                              childAspectRatio: 2/3,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                            ),
+                            itemCount: cuyList.length,
+                            itemBuilder: (context, index){
+                              final cuy = cuyList[index];
+                              return CuyItem(
+                                key: _cuyItemKeyList[index],
+                                cuy: cuy,
+                                seleccionar: snapshot.data!,
+                                onLongPress: () {
+                                  if(!snapshot.data!){
+                                    cuyBloc.changeSeleccionar(true);
+                                    _cuyItemKeyList[index].currentState!.isSelected = true;
+                                    _cuyItemKeyList[index].currentState!.color = Color(0xFFDCEDC8);
+                                  }
+                                  //_cuyKey.currentState!.seleccionar = true;
+                                },
+                              );
+                            }
+                        );
+                      }
+                  );
+                }
+              }
+            },
+          ),
+          carrito.cantidad!=0?
+          Positioned(
+            bottom: 25,
+            left: 25,
+            child: CarritoVenta(carrito: carrito.carrito,),
+          ):SizedBox.shrink(),
+        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
@@ -166,8 +180,16 @@ class DetalleContenedorPage extends StatelessWidget {
               SizedBox(height: 10,),
               FloatingActionButton.extended(
                 heroTag: 'vender',
-                onPressed: null,
                 label: Text('Vender'),
+                onPressed: (){
+                  _cuyItemKeyList.forEach((element) {
+                    if(element.currentState!.isSelected){
+                      carrito.agregar(element.currentState!.cuy);
+                      element.currentState!.isSelected = false;
+                    }
+                    cuyBloc.changeSeleccionar(false);
+                  });
+                },
                 //child: Text('Mover'),
               ),
               SizedBox(height: 10,),

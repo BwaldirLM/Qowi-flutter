@@ -1,46 +1,47 @@
 import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
+
 import 'package:qowi/src/bloc/home_bloc.dart';
+
 import 'package:qowi/src/pages/galpones_page.dart';
 import 'package:qowi/src/pages/info_page.dart';
-
 import 'package:qowi/src/pages/recursos_page.dart';
 
+import 'package:qowi/src/providermodels/carrito_model.dart';
 import 'package:qowi/src/services/auth_services.dart';
 
 class HomePage extends StatelessWidget {
 
-
-
   final _homeBloc = HomeBloc();
-
 
   @override
   Widget build(BuildContext context) {
     final auth = AuthServices.of(context).usuarioProvider;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: IconThemeData(
-          color: Colors.blueAccent
-        ),
-        title: Text(
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(
+              color: Colors.blueAccent
+          ),
+          title: Text(
             'QOWI',
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w700),
+            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w700),
+          ),
+          actions: [
+            IconButton(icon: Icon(Icons.account_circle),
+                onPressed: () {
+                  auth.signOut();
+                  Navigator.pushReplacementNamed(context, 'login');
+                }
+            )
+          ],
+          centerTitle: true,
         ),
-        actions: [
-          IconButton(icon: Icon(Icons.account_circle),
-              onPressed: () {
-                auth.signOut();
-                Navigator.pushReplacementNamed(context, 'login');
-          }
-          )
-        ],
-        centerTitle: true,
-      ),
-      body: _callPage(_homeBloc),
-      bottomNavigationBar: _bottomNavigationBar(_homeBloc),
-    );
+        body: _callPage(_homeBloc),
+        bottomNavigationBar: _bottomNavigationBar(_homeBloc),
+      );
 
   }
 
