@@ -10,9 +10,8 @@ class VentaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carrito = Provider.of<Carrito>(context);
+    final carritoProvider = Provider.of<CarritoProvider>(context);
     final size = MediaQuery.of(context).size;
-    List<GlobalKey<VentaItemState>> globalKeyList = [];
     return Scaffold(
       appBar: AppBar(
         title: Text('Venta'),
@@ -23,21 +22,21 @@ class VentaPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('${carrito.cantidad} cuys', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
+            Text('${carritoProvider.cantidad} cuys', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w700),),
             Expanded(
               //height: size.height*0.9 - kTextTabBarHeight,
               child: ListView.builder(
-                  itemCount: carrito.cantidad,
+                  itemCount: carritoProvider.cantidad,
                   itemBuilder: (context, index){
-                    final cuy = carrito.carrito[index];
-                    final itemKey = GlobalKey<VentaItemState>();
-                    globalKeyList.add(itemKey);
+                    final cardVenta = carritoProvider.carritoProvider[index];
+
                     return VentaItem(
                       //key: itemKey,
                         size: size,
-                        cuy: cuy,
+                        cardVenta: cardVenta,
+                        //saved: cardVenta.saved,
                         onPressed: (){
-                          carrito.delete(cuy);
+                          carritoProvider.delete(index);
                       },
                     );
                   }
@@ -45,6 +44,18 @@ class VentaPage extends StatelessWidget {
             )
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: FloatingActionButton.extended(
+          onPressed: (){
+            if(carritoProvider.listo){
+              carritoProvider.guardarVenta();
+              carritoProvider.clear();
+              Navigator.of(context).popUntil(ModalRoute.withName('galpon'));
+            }
+          },
+          label: Text('Confirmar Venta'),
+          backgroundColor: Color(0xFF00796B),
       ),
 
     );

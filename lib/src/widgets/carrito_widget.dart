@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:qowi/src/models/cuy_model.dart';
 
 class CarritoVenta extends StatelessWidget {
-  final List<CuyModel> carrito;
+  final int cantidad;
 
   const CarritoVenta({
     Key? key,
-    required this.carrito
+    required this.cantidad
   }) : super(key: key);
 
   @override
@@ -33,7 +33,7 @@ class CarritoVenta extends StatelessWidget {
                       shape: BoxShape.circle
                   ),
                   child: Text(
-                    '${carrito.length}',
+                    '$cantidad',
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                 )

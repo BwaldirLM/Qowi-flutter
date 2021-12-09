@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qowi/src/models/cuy_model.dart';
+import 'package:qowi/src/models/venta_detalle_model.dart';
 import 'package:qowi/src/providermodels/carrito_model.dart';
 import 'package:supabase/supabase.dart';
 
 class VentaItem extends StatefulWidget {
   const VentaItem({
     required this.size,
-    required this.cuy,
+    required this.cardVenta,
     required this.onPressed,
-    this.saved = false,
+
     Key? key
   }) : super(key: key);
 
   final Size size;
-  final CuyModel cuy;
+  final CardVenta cardVenta;
   final Function() onPressed;
-  final bool saved;
+
 
   @override
   VentaItemState createState() => VentaItemState();
@@ -26,6 +27,7 @@ class VentaItemState extends State<VentaItem> {
   late int selectedRadioTile;
   late TextEditingController controller;
   late bool _saved;
+  late VentaDetalleModel ventaDetalle;
 
   bool get saved{
     return _saved;
@@ -35,9 +37,10 @@ class VentaItemState extends State<VentaItem> {
   void initState() {
     // TODO: implement initState
     super.initState();
-      selectedRadioTile = 0;
-      controller = TextEditingController();
-      _saved = widget.saved;
+      selectedRadioTile = widget.cardVenta.ventaDetalleModel!.proposito == 'recria'? 1:2;
+      controller = TextEditingController()..text = '${widget.cardVenta.ventaDetalleModel!.precio??''}';
+      _saved = widget.cardVenta.saved;
+      ventaDetalle = widget.cardVenta.ventaDetalleModel!;
   }
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,7 @@ class VentaItemState extends State<VentaItem> {
           ),
           Container(
             width: widget.size.width*0.3,
-            child: Text(widget.cuy.tipo!),
+            child: Text(widget.cardVenta.cuy.tipo!),
           ),
           Container(
             width: widget.size.width*0.4,
@@ -81,6 +84,8 @@ class VentaItemState extends State<VentaItem> {
               children: [
                 TextField(
                   controller: controller,
+                  //initialValue: '20',
+                  //initialValue: widget.cardVenta.ventaDetalleModel!.precio.toString(),
                   readOnly: _saved,
                   decoration: InputDecoration(
                       border: InputBorder.none,
@@ -133,11 +138,14 @@ class VentaItemState extends State<VentaItem> {
     //print(controller.text);
     //print(selectedRadioTile);
     if(controller.text.isNotEmpty && selectedRadioTile != 0) {
+      ventaDetalle.precio = double.parse(controller.text);
+      ventaDetalle.proposito = selectedRadioTile.isOdd? 'recria' : 'consumo';
       setState(() {
         if(_saved) _saved = false;
         else _saved = true;
 
       });
+      widget.cardVenta.saved = _saved;
     }
 
   }

@@ -1,16 +1,35 @@
+import 'dart:convert';
+
+VentaDetalleModel ventaDetalleModelFromJson(String str) => VentaDetalleModel.fromJson(json.decode(str));
+String ventaDetalleModelToJson(VentaDetalleModel data) => json.encode(data.toJson());
 class VentaDetalleModel{
-  int id;
-  double precio;
-  String proposito;
-  int cuyId;
-  int ventaId;
+  int? id;
+  double? precio;
+  String? proposito;
+  int? cuyId;
+  int? ventaId;
 
   VentaDetalleModel({
-    required this.id,
-    required this.precio,
-    required this.proposito,
-    required this.cuyId,
-    required this.ventaId
+    this.id,
+    this.precio,
+    this.proposito,
+    this.cuyId,
+    this.ventaId
   });
+
+  factory VentaDetalleModel.fromJson(Map<String, dynamic> json) => new VentaDetalleModel(
+    id: json['id'],
+    precio: json['precio'],
+    proposito: json['proposito'],
+    cuyId: json['cuy_id'],
+    ventaId: json['venta_id']
+  );
+
+  Map<String, dynamic> toJson() => {
+    'precio'    : precio,
+    'proposito' : proposito,
+    'cuy_id'    : cuyId,
+    'venta_id'  : ventaId
+  };
 
 }

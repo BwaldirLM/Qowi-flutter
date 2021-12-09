@@ -20,7 +20,7 @@ class GalponPage extends StatelessWidget {
     final  galpon = ModalRoute.of(context)!.settings.arguments as GalponModel;
     final _galponBloc = GalponBloc();
 
-    final carrito  = Provider.of<Carrito>(context);
+    final carrito  = Provider.of<CarritoProvider>(context);
 
     final size = MediaQuery.of(context).size;
 
@@ -213,7 +213,7 @@ class GalponPage extends StatelessWidget {
                  Positioned(
                    bottom: 25,
                    left: 25,
-                   child: CarritoVenta(carrito: carrito.carrito,),
+                   child: CarritoVenta(cantidad: carrito.cantidad),
                  ):SizedBox.shrink(),
 
              ],

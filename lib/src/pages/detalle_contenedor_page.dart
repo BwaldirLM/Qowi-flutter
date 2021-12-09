@@ -24,7 +24,7 @@ class DetalleContenedorPage extends StatelessWidget {
     cuyBloc.cargarCuysContenedor(contenedor.id);
     late List<CuyModel> listSeleccionado;
     late  List<GlobalKey<CuyItemState>> _cuyItemKeyList;
-    final carrito = Provider.of<Carrito>(context);
+    final carrito = Provider.of<CarritoProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: StreamBuilder<bool>(
@@ -134,7 +134,7 @@ class DetalleContenedorPage extends StatelessWidget {
           Positioned(
             bottom: 25,
             left: 25,
-            child: CarritoVenta(carrito: carrito.carrito,),
+            child: CarritoVenta(cantidad: carrito.cantidad),
           ):SizedBox.shrink(),
         ],
       ),
