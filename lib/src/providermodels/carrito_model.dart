@@ -52,6 +52,7 @@ class CarritoProvider with ChangeNotifier{
 
   void clear(){
     _carrito.clear();
+    notifyListeners();
   }
 }
 

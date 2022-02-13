@@ -2,11 +2,12 @@ import 'package:qowi/src/models/cuy_model.dart';
 import 'package:qowi/src/providers/cuy_provider.dart';
 import 'package:rxdart/rxdart.dart';
 
-class EditarCuyBLoc{
+class EditarCuyBLoc {
   final _editarCuyBloc = BehaviorSubject<bool>();
   final _cuyBloc = BehaviorSubject<CuyModel>();
   final _menuController = BehaviorSubject<bool>();
   final _incidenciaController = BehaviorSubject<String>();
+  final _genderController = BehaviorSubject<bool>();
 
   final _cuyProvider = CuyProvider();
 
@@ -14,14 +15,15 @@ class EditarCuyBLoc{
   Stream<CuyModel> get cuyStream => _cuyBloc.stream;
   Stream<bool> get menuStream => _menuController.stream;
   Stream<String> get incidenciaStream => _incidenciaController.stream;
+  Stream<bool> get genderStream => _genderController.stream;
 
-  Function(bool) get changeEditState  => _editarCuyBloc.sink.add;
+  Function(bool) get changeEditState => _editarCuyBloc.sink.add;
 
-  void editar(){
+  void editar() {
     _editarCuyBloc.sink.add(true);
   }
 
-  void noEditar(){
+  void noEditar() {
     _editarCuyBloc.sink.add(false);
   }
 
@@ -29,34 +31,36 @@ class EditarCuyBLoc{
     _cuyBloc.sink.add(cuy);
   }
 
-  void cambiarNombre(CuyModel? cuy){
+  void cambiarNombre(CuyModel? cuy) {
     _cuyBloc.sink.add(cuy!);
   }
 
-  void updateCuy(CuyModel cuy){
-    _cuyProvider.updateCuy(cuy);
+  void updateCuy(CuyModel cuy) async {
+    await _cuyProvider.updateCuy(cuy);
+    _cuyBloc.sink.add(cuy);
   }
 
-  void cambiarMenu(bool valor){
+  void cambiarMenu(bool valor) {
     _menuController.sink.add(valor);
   }
+
   void changeIncidencia(String opt) {
     _incidenciaController.sink.add(opt);
   }
+
   void newIncidencia(CuyModel cuy, String incidencia) async {
     await _cuyProvider.newIncidencia(cuy, incidencia);
   }
 
-  dispose(){
+  void changeGender(bool gender) {
+    _genderController.sink.add(gender);
+  }
+
+  dispose() {
     _editarCuyBloc.close();
     _cuyBloc.close();
     _menuController.close();
     _incidenciaController.close();
+    _genderController.close();
   }
-
-
-
-
-
-
 }

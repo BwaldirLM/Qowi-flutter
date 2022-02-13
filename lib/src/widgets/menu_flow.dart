@@ -12,6 +12,7 @@ class FlowMenu extends StatefulWidget {
 
 class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin{
   late AnimationController controller;
+  late List<Widget> options;
   @override
   void initState() {
     super.initState();
@@ -19,7 +20,7 @@ class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin
       duration: const Duration(milliseconds: 300),
         vsync: this
     );
-    widget.children.insert(0, FloatingActionButton(
+    options = [FloatingActionButton(
       elevation: 0,
       splashColor: Colors.black,
       child: Icon(Icons.menu, color: Colors.white, size: 40),
@@ -27,7 +28,8 @@ class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin
         if(controller.status == AnimationStatus.completed) controller.reverse();
         else controller.forward();
       },
-    ));
+    )];
+    options.addAll(widget.children);
   }
 
   @override
@@ -46,7 +48,7 @@ class _FlowMenuState extends State<FlowMenu> with SingleTickerProviderStateMixin
      Icons.call,
      Icons.notifications
    ].map<Widget>(buildItem).toList(),*/
-      children: widget.children.map<Widget>(buildItem).toList(),
+      children: options.map<Widget>(buildItem).toList(),
       delegate: FlowMenuDelegate(controller: controller),
     );
   }
@@ -66,8 +68,8 @@ class FlowMenuDelegate extends FlowDelegate{
   @override
   void paintChildren(FlowPaintingContext context) {
     final size = context.size;
-    final xStart = size.width - (buttonSize + 10);
-    final yStart = size.height - (buttonSize + 10);
+    final xStart = size.width - (buttonSize+5);
+    final yStart = size.height - (buttonSize+5);
     for(int i = context.childCount - 1; i >= 0; i--){
       final childSize = context.getChildSize(i)!.width;
       final margin = 8;

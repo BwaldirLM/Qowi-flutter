@@ -25,6 +25,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -42,26 +44,21 @@ class MyApp extends StatelessWidget {
                       color: Colors.transparent,
                       elevation: 0,
                       iconTheme: IconThemeData(color: Colors.black),
-                      foregroundColor: Colors.black
-
-                  )
-              ),
+                      foregroundColor: Colors.black)),
               initialRoute: '/',
               routes: {
-                '/'                : (context) => SplashPage(),
-                'login'            : (context) => LoginPage(),
-                'register'         : (context) => RegisterPage(),
-                'home'             : (context) => HomePage(),
-                'galpon'           : (context) => GalponPage(),
-                'detalleContenedor':(context) => DetalleContenedorPage(),
-                'cuy'              : (context) => CuyPage(),
-                'nacimiento'       : (context) =>NacimientoPage(),
-                'mover'            : (_) => MoverCuyPage(),
-                'venta'             : (_) => VentaPage()
-              }
-          ),
-        )
-        ,
+                '/': (context) => SplashPage(),
+                'login': (context) => LoginPage(),
+                'register': (context) => RegisterPage(),
+                'home': (context) => HomePage(),
+                'galpon': (context) => GalponPage(),
+                'detalleContenedor': (context) => DetalleContenedorPage(),
+                'cuy': (context) => CuyPage(),
+                'nacimiento': (context) => NacimientoPage(),
+                'mover': (_) => MoverCuyPage(),
+                'venta': (_) => VentaPage()
+              }),
+        ),
       ),
     );
   }
