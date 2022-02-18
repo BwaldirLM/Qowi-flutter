@@ -16,6 +16,7 @@ class NacimientoBloc {
   final _cuyPadreController = BehaviorSubject<CuyModel>();
   final _cuyMadreController = BehaviorSubject<CuyModel>();
   final _cantidadController = BehaviorSubject<int>();
+  final _cantidadIncidenciaController = BehaviorSubject<int>();
   final _contController = BehaviorSubject<ContenedorModel>();
   final _cargandoControlller = BehaviorSubject<bool>();
 
@@ -32,12 +33,11 @@ class NacimientoBloc {
   Stream<CuyModel> get cuyPadreStream => _cuyPadreController.stream;
   Stream<CuyModel> get cuyMadreStream => _cuyMadreController.stream;
   Stream<int> get cantidadStream => _cantidadController.stream;
+  Stream<int> get cantidadIncStream => _cantidadIncidenciaController.stream;
   Stream<ContenedorModel> get contStream => _contController.stream;
-
 
   bool get seleccionValue => _seleccionController.value;
   int get cantidadValue => _cantidadController.value;
-
 
   void cargarContenedor(GalponModel galpon) async {
     final contenedores = await _galponProvider.cargarContenedores(galpon);
@@ -76,15 +76,21 @@ class NacimientoBloc {
     _cantidadController.sink.add(i);
   }
 
-  void agregarCrias(PadresModel padres, int crias) async {
-    await _nacimientoProvider.addNacimiento(padres, crias);
+  void incrementarInc(int i) {
+    if (i < 1) i = 0;
+
+    _cantidadIncidenciaController.sink.add(i);
   }
 
-  void registrarNacimiento(PadresModel padres) async {
+  void agregarCrias(PadresModel padres, int crias) async {
+    await _nacimientoProvider.addNacimiento(padres, crias, null);
+  }
+
+  void registrarNacimiento(
+      PadresModel padres, DateTime? fechaNacimiento) async {
     int crias = !_cantidadController.hasValue ? 1 : _cantidadController.value;
 
-    await _nacimientoProvider.addNacimiento(padres, crias);
-
+    await _nacimientoProvider.addNacimiento(padres, crias, fechaNacimiento);
   }
 
   void contendor(int id) async {
@@ -102,6 +108,7 @@ class NacimientoBloc {
     _cuyPadreController.close();
     _cuyMadreController.close();
     _cantidadController.close();
+    _cantidadIncidenciaController.close();
     _contController.close();
     _cargandoControlller.close();
   }

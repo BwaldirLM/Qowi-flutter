@@ -6,7 +6,8 @@ import 'package:supabase/supabase.dart';
 class NacimientoProvider {
   final clinte = SupabaseClient(supabaseUrl, supabaseKey);
 
-  Future<List<CuyModel>> addNacimiento(PadresModel padres, int crias) async {
+  Future<List<CuyModel>> addNacimiento(
+      PadresModel padres, int crias, DateTime? fechaNacimiento) async {
     late final respId;
     final PostgrestResponse find = await clinte
         .from('padres')
@@ -33,7 +34,7 @@ class NacimientoProvider {
             (index) => CuyModel(
                     contenedor: padres.contenedorId,
                     tipo: 'cria',
-                    fechaNacimiento: DateTime.now(),
+                    fechaNacimiento: fechaNacimiento ?? DateTime.now(),
                     padresId: respId)
                 .toJson()))
         .execute();

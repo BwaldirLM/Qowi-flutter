@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qowi/src/bloc/editar_cuy_bloc.dart';
 import 'package:qowi/src/models/cuy_model.dart';

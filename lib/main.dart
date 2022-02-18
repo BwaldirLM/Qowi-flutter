@@ -7,6 +7,7 @@ import 'package:qowi/src/pages/galpon_page.dart';
 import 'package:qowi/src/pages/home_page.dart';
 import 'package:qowi/src/pages/login_page.dart';
 import 'package:qowi/src/pages/mover_cuys_page.dart';
+import 'package:qowi/src/pages/nacimiento_contenedor_page.dart';
 import 'package:qowi/src/pages/nacimiento_page.dart';
 import 'package:qowi/src/pages/register_page.dart';
 import 'package:qowi/src/pages/splash_page.dart';
@@ -56,7 +57,8 @@ class MyApp extends StatelessWidget {
                 'cuy': (context) => CuyPage(),
                 'nacimiento': (context) => NacimientoPage(),
                 'mover': (_) => MoverCuyPage(),
-                'venta': (_) => VentaPage()
+                'venta': (_) => VentaPage(),
+                'nacimientoContenedor': (_) => NacimientoContenedorPage()
               }),
         ),
       ),
