@@ -58,14 +58,15 @@ class CuyProvider{
     final cuysData = decodedData['data'];
 
     List<CuyModel> cuys = [];
-    cuysData.forEach((element){
-      final cuyTemp = CuyModel.fromJson(element);
-      cuys.add(cuyTemp);
-
-    });
-
+    if(cuysData != null){
+      cuysData.forEach((element){
+        final cuyTemp = CuyModel.fromJson(element);
+        cuys.add(cuyTemp);
+      });
+    }
     return cuys;
   }
+
   Future<void> addCuy(CuyModel cuy)async{
     if(cuy.esReproductora()) cuy.genero = 'hembra';
     else if(cuy.esPadrillo()) cuy.genero = 'macho';

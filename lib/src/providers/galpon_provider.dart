@@ -24,18 +24,20 @@ class GalponProvider{
         .execute();
     final Map decodedData = response.toJson();
 
-    final List galponesData = decodedData['data'];
+    final  galponesData = decodedData['data'];
 
 
     List<GalponModel> galpones = [];
 
-    galponesData.forEach((element) {
-      final temp = GalponModel();
-      temp.id = element['id'];
-      temp.userId = element['user_id'];
-      temp.name = element['nombre'];
-      galpones.add(temp);
-    });
+    if(galponesData != null){
+      galponesData.forEach((element) {
+        final temp = GalponModel();
+        temp.id = element['id'];
+        temp.userId = element['user_id'];
+        temp.name = element['nombre'];
+        galpones.add(temp);
+      });
+    }
 
     return galpones;
   }
@@ -72,13 +74,15 @@ class GalponProvider{
 
     List<ContenedorModel> posas = [];
 
-    posasData.forEach((element) {
-      final temp = ContenedorModel();
-      temp.id = element['id'];
-      temp.galponId = element['galpon_id'];
-      temp.numero = element['numero'];
-      posas.add(temp);
-    });
+    if(posasData != null){
+      posasData.forEach((element) {
+        final temp = ContenedorModel();
+        temp.id = element['id'];
+        temp.galponId = element['galpon_id'];
+        temp.numero = element['numero'];
+        posas.add(temp);
+      });
+    }
 
     return posas;
   }

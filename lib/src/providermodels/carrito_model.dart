@@ -3,29 +3,29 @@ import 'package:qowi/src/models/cuy_model.dart';
 import 'package:qowi/src/models/venta_detalle_model.dart';
 import 'package:qowi/src/providers/venta_provider.dart';
 
-class CarritoProvider with ChangeNotifier{
+class CarritoProvider with ChangeNotifier {
   final List<CardVenta> _carrito = [];
   final _ventaProvider = VentaProvider();
 
-  List<CardVenta> get carritoProvider =>  _carrito;
+  List<CardVenta> get carritoProvider => _carrito;
 
   int get cantidad => _carrito.length;
 
-  bool get listo{
+  bool get listo {
     return confirmado();
   }
 
-  void agregar(CuyModel cuy){
-    if(!contains(cuy)) {
+  void agregar(CuyModel cuy) {
+    if (!contains(cuy)) {
       _carrito.add(CardVenta(cuy: cuy));
       notifyListeners();
     }
   }
-  bool contains(CuyModel cuy){
+
+  bool contains(CuyModel cuy) {
     bool exist = false;
     _carrito.forEach((cardItem) {
-      if(cardItem.cuy.id! == cuy.id!)
-        exist = true;
+      if (cardItem.cuy.id! == cuy.id!) exist = true;
     });
     return exist;
   }
@@ -40,7 +40,15 @@ class CarritoProvider with ChangeNotifier{
     return _carrito.every((element) => element.saved);
   }
 
-  void guardarVenta() async{
+  void asignarTodo(String precio) {
+    double precioD = double.parse(precio);
+    for (var element in _carrito) {
+      element.ventaDetalleModel!.precio = precioD;
+    }
+    notifyListeners();
+  }
+
+  void guardarVenta() async {
     List<CuyModel> cuys = [];
     List<VentaDetalleModel> ventaDetalles = [];
     _carrito.forEach((element) {
@@ -50,18 +58,18 @@ class CarritoProvider with ChangeNotifier{
     await _ventaProvider.addVenta(cuys, ventaDetalles);
   }
 
-  void clear(){
+  void clear() {
     _carrito.clear();
     notifyListeners();
   }
 }
 
-class CardVenta{
+class CardVenta {
   VentaDetalleModel? ventaDetalleModel;
   CuyModel cuy;
   bool saved;
-  
-  CardVenta({this.ventaDetalleModel, required this.cuy, this.saved = false}){
+
+  CardVenta({this.ventaDetalleModel, required this.cuy, this.saved = false}) {
     ventaDetalleModel = VentaDetalleModel(
       cuyId: cuy.id,
     );
