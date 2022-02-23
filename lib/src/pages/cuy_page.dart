@@ -9,9 +9,10 @@ class CuyPage extends StatelessWidget {
     final cuy = ModalRoute.of(context)!.settings.arguments as CuyModel;
     final respaldo = CuyModel.fromJson(cuy.toJson());
     final size = MediaQuery.of(context).size;
-    final subtittle = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
+    const subtittle = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
     final bloc = EditarCuyBLoc();
     bloc.cargarCuy(cuy);
+    if (cuy.genero != null) isMale = cuy.genero == 'macho' ? true : false;
 
     return Scaffold(
       body: Stack(
@@ -70,8 +71,8 @@ class CuyPage extends StatelessWidget {
     return Positioned(
       top: size.height * .4,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+        decoration: const BoxDecoration(
             color: Colors.yellow,
             borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(15),
@@ -153,7 +154,7 @@ class CuyPage extends StatelessWidget {
                     return Icon(Icons.male);
                   else if (snapshot.data!.genero == 'hembra')
                     return Icon(Icons.female);
-                  else
+                  else {
                     return StreamBuilder<bool>(
                       stream: bloc.editarCuyStream,
                       initialData: false,
@@ -179,16 +180,18 @@ class CuyPage extends StatelessWidget {
                                     ],
                                   );
                                 });
-                          } else
+                          } else {
                             return IconButton(
                                 onPressed: () {
                                   bloc.editar();
                                 },
-                                icon: Icon(Icons.add));
+                                icon: const Icon(Icons.add));
+                          }
                         } else
                           return SizedBox.shrink();
                       },
                     );
+                  }
                 } else
                   return SizedBox();
               })
@@ -204,29 +207,25 @@ class CuyPage extends StatelessWidget {
         StreamBuilder<CuyModel>(
             stream: bloc.cuyStream,
             builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return Center(child: CircularProgressIndicator());
-              else {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
                 final cuyTemp = snapshot.data;
                 if (cuyTemp!.nombre == null || cuyTemp.nombre!.isEmpty) {
-                  return Container(
-                    child: Text('${cuyTemp.tipo!.toUpperCase()}',
-                        style: TextStyle(
-                            fontSize: 22, fontWeight: FontWeight.bold)),
-                  );
+                  return Text(cuyTemp.tipo!.toUpperCase(),
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold));
                 } else {
-                  return Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      //crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text('${cuyTemp.nombre}',
-                            style: TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold)),
-                        Text('${cuyTemp.tipo!.toUpperCase()}',
-                            style: TextStyle(fontSize: 13)),
-                      ],
-                    ),
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    //crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('${cuyTemp.nombre}',
+                          style: const TextStyle(
+                              fontSize: 22, fontWeight: FontWeight.bold)),
+                      Text(cuyTemp.tipo!.toUpperCase(),
+                          style: const TextStyle(fontSize: 13)),
+                    ],
                   );
                 }
               }
@@ -252,7 +251,7 @@ class CuyPage extends StatelessWidget {
                                   title: Text('Cambiar nombre'),
                                   content: TextField(
                                     keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                         border: InputBorder.none,
                                         hintText: 'Ingrese un nombre'),
                                     onChanged: (value) =>
@@ -390,7 +389,7 @@ class CuyPage extends StatelessWidget {
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(5)),
-                                                    child: Text(
+                                                    child: const Text(
                                                       'Blanco',
                                                       style: TextStyle(
                                                           fontWeight:
@@ -458,7 +457,7 @@ class CuyPage extends StatelessWidget {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               5)),
-                                                  child: Text(
+                                                  child: const Text(
                                                     'Negro',
                                                     style: TextStyle(
                                                         fontWeight:
@@ -467,7 +466,8 @@ class CuyPage extends StatelessWidget {
                                                   ),
                                                 ),
                                                 Container(
-                                                  padding: EdgeInsets.all(5),
+                                                  padding:
+                                                      const EdgeInsets.all(5),
                                                   decoration: BoxDecoration(
                                                       border: Border.all(
                                                           color: Colors.brown),
@@ -700,11 +700,11 @@ class CuyPage extends StatelessWidget {
         stream: bloc.menuStream,
         initialData: false,
         builder: (context, snapshot) {
-          if (snapshot.data!)
+          if (snapshot.data!) {
             return Container(
               height: size.height,
               width: size.width,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   //color: Colors.blueAccent,
                   gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -793,7 +793,7 @@ class CuyPage extends StatelessWidget {
                 ),
               ),
             );
-          else
+          } else
             return SizedBox.shrink();
         });
   }

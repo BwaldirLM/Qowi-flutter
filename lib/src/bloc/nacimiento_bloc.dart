@@ -58,6 +58,11 @@ class NacimientoBloc {
     _madreController.sink.add(cuys);
   }
 
+  void cargarPadresTodo() async {
+    final cuys = await _cuyProvider.cargarPadresTodo();
+    _padreController.sink.add(cuys);
+  }
+
   void cargarPadres(ContenedorModel contenedor) async {
     final cuys = await _cuyProvider.cargarPadres(contenedor);
     _padreController.sink.add(cuys);

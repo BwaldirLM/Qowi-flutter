@@ -5,20 +5,17 @@ import 'package:supabase/supabase.dart';
 
 import 'galpon_provider.dart';
 
-class CuyProvider{
+class CuyProvider {
   final client = SupabaseClient(supabaseUrl, supabaseKey);
   final galponProvider = GalponProvider();
 
-  Future<List<CuyModel>> cargarCuys()async{
-    final user =  await galponProvider.getUser();
+  Future<List<CuyModel>> cargarCuys() async {
+    final user = await galponProvider.getUser();
 
     final response = await client
         .from('app_users')
-        .select(
-          '*, galpon(*,contenedor(*, cuy(*)))'
-        )
+        .select('*, galpon(*,contenedor(*, cuy(*)))')
         .eq('user_id', user.id)
-
         .execute();
 
     final decodedData = response.toJson();
@@ -26,27 +23,22 @@ class CuyProvider{
 
     final galpones = cuysData['galpon'];
     List<CuyModel> cuysList = [];
-    galpones.forEach((element){
+    galpones.forEach((element) {
       //print('=============${element}');
       final contenedor = element['contenedor'];
-      contenedor.forEach((element){
+      contenedor.forEach((element) {
         final cuys = element['cuy'];
-        cuys.forEach((cuy){
+        cuys.forEach((cuy) {
           final cuyTemp = CuyModel.fromJson(cuy);
-          if(cuyTemp.estado!) cuysList.add(cuyTemp);
-
+          if (cuyTemp.estado!) cuysList.add(cuyTemp);
         });
       });
     });
 
-
-
-
     return cuysList;
   }
 
-
-  Future<List<CuyModel>> cargarCuysContenedor(int contenedor)async{
+  Future<List<CuyModel>> cargarCuysContenedor(int contenedor) async {
     final response = await client
         .from('cuy')
         .select()
@@ -58,8 +50,8 @@ class CuyProvider{
     final cuysData = decodedData['data'];
 
     List<CuyModel> cuys = [];
-    if(cuysData != null){
-      cuysData.forEach((element){
+    if (cuysData != null) {
+      cuysData.forEach((element) {
         final cuyTemp = CuyModel.fromJson(element);
         cuys.add(cuyTemp);
       });
@@ -67,53 +59,51 @@ class CuyProvider{
     return cuys;
   }
 
-  Future<void> addCuy(CuyModel cuy)async{
-    if(cuy.esReproductora()) cuy.genero = 'hembra';
-    else if(cuy.esPadrillo()) cuy.genero = 'macho';
-    else if(cuy.esEngorde()) cuy.genero = 'macho';
-    final response = await client.from('cuy')
-        .insert([cuy.toJson()])
-        .execute();
-
+  Future<void> addCuy(CuyModel cuy) async {
+    if (cuy.esReproductora())
+      cuy.genero = 'hembra';
+    else if (cuy.esPadrillo())
+      cuy.genero = 'macho';
+    else if (cuy.esEngorde()) cuy.genero = 'macho';
+    final response = await client.from('cuy').insert([cuy.toJson()]).execute();
   }
 
   //--Actulizar cuy
-  Future<void> updateCuy(CuyModel cuy)async{
-    final response = await client.from('cuy')
+  Future<void> updateCuy(CuyModel cuy) async {
+    final response = await client
+        .from('cuy')
         .update(cuy.toJson())
         .eq('id', cuy.id)
         .execute();
   }
 
-  Future<void> moverCuys(List<CuyModel> lista, ContenedorModel contenedor)async{
-    lista.forEach((cuy)async{
+  Future<void> moverCuys(
+      List<CuyModel> lista, ContenedorModel contenedor) async {
+    lista.forEach((cuy) async {
       cuy.contenedor = contenedor.id;
       await updateCuy(cuy);
     });
   }
 
-  Future<List<CuyModel>> cargarCuysMadres()async{
-    final response = await client
-        .from('cuy')
-        .select()
-        .eq('genero', 'hembra')
-        .execute();
+  Future<List<CuyModel>> cargarCuysMadres() async {
+    final response =
+        await client.from('cuy').select().eq('genero', 'hembra').execute();
 
     final decodedData = response.toJson();
     final cuysData = decodedData['data'];
 
     List<CuyModel> cuys = [];
-    cuysData.forEach((element){
+    cuysData.forEach((element) {
       final cuyTemp = CuyModel.fromJson(element);
       cuys.add(cuyTemp);
-
     });
 
     return cuys;
   }
 
-  Future<List<CuyModel>> cargarMadres(ContenedorModel contenedor)async{
-    final response = await client.from('cuy')
+  Future<List<CuyModel>> cargarMadres(ContenedorModel contenedor) async {
+    final response = await client
+        .from('cuy')
         .select()
         .eq('contenedor', contenedor.id)
         .eq('tipo', 'reproductora')
@@ -122,15 +112,33 @@ class CuyProvider{
     final decodedData = response.toJson();
     final cuysData = decodedData['data'];
     List<CuyModel> cuys = [];
-    cuysData.forEach((element){
+    cuysData.forEach((element) {
       final cuy = CuyModel.fromJson(element);
       cuys.add(cuy);
     });
     return cuys;
   }
 
-  Future<List<CuyModel>> cargarPadres(ContenedorModel contenedor)async {
-    final response = await client.from('cuy')
+  Future<List<CuyModel>> cargarPadresTodo() async {
+    final cuys = <CuyModel>[];
+    final response = await client
+        .from('cuy')
+        .select()
+        .eq('tipo', 'padrillo')
+        .eq('estado', true)
+        .execute();
+    final decodedData = response.toJson();
+    final cuysData = decodedData['data'];
+    cuysData.forEach((element) {
+      final cuy = CuyModel.fromJson(element);
+      cuys.add(cuy);
+    });
+    return cuys;
+  }
+
+  Future<List<CuyModel>> cargarPadres(ContenedorModel contenedor) async {
+    final response = await client
+        .from('cuy')
         .select()
         .eq('contenedor', contenedor.id)
         .eq('tipo', 'padrillo')
@@ -140,34 +148,20 @@ class CuyProvider{
     final decodedData = response.toJson();
     final cuysData = decodedData['data'];
     List<CuyModel> cuys = [];
-    cuysData.forEach((element){
+    cuysData.forEach((element) {
       final cuy = CuyModel.fromJson(element);
       cuys.add(cuy);
     });
-    if(cuys.isEmpty){
-      final response = await client.from('cuy')
-          .select()
-          .eq('tipo', 'padrillo')
-          .eq('estado', true)
-          .execute();
-
-      final decodedData = response.toJson();
-      final cuysData = decodedData['data'];
-      cuysData.forEach((element){
-        final cuy = CuyModel.fromJson(element);
-        cuys.add(cuy);
-      });
+    if (cuys.isEmpty) {
+      cuys = await cargarPadresTodo();
     }
     return cuys;
-
   }
 
   Future<void> newIncidencia(CuyModel cuy, String incidencia) async {
-    final response = await client.from('incidencia_muerte').
-          insert([{'descripcion': incidencia, 'cuy_id':cuy.id}])
-          .execute();
+    final response = await client.from('incidencia_muerte').insert([
+      {'descripcion': incidencia, 'cuy_id': cuy.id}
+    ]).execute();
     await updateCuy(cuy);
-
   }
-
 }

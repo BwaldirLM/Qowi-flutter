@@ -45,11 +45,18 @@ class NacimientoContenedorPage extends StatelessWidget {
                               );
                             } else {
                               padre = snapshot.data!.first;
-                              return CuyPageView(
-                                cuyList: snapshot.data!,
-                                onPageChanged: (page) {
-                                  padre = snapshot.data![page];
-                                },
+                              return Stack(
+                                children: [
+                                  CuyPageView(
+                                    cuyList: snapshot.data!,
+                                    onPageChanged: (page) {
+                                      padre = snapshot.data![page];
+                                    },
+                                  ),
+                                  IconButton(
+                                      onPressed: () => bloc.cargarPadresTodo(),
+                                      icon: Icon(Icons.refresh))
+                                ],
                               );
                             }
                           },
