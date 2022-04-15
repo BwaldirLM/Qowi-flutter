@@ -4,7 +4,7 @@ import 'package:qowi/src/bloc/home_bloc.dart';
 
 import 'package:qowi/src/pages/galpones_page.dart';
 import 'package:qowi/src/pages/info_page.dart';
-import 'package:qowi/src/pages/recursos_page.dart';
+import 'package:qowi/src/pages/reportes_page.dart';
 import 'package:qowi/src/services/auth_services.dart';
 
 class HomePage extends StatelessWidget {
@@ -45,10 +45,9 @@ class HomePage extends StatelessWidget {
         return BottomNavigationBar(
             currentIndex: snapshot.data!.index,
             onTap: bloc.pickItem,
-            items: [
+            items: const [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.monetization_on_outlined),
-                  label: 'recursos'),
+                  icon: Icon(Icons.bar_chart), label: 'Reportes'),
               BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
               BottomNavigationBarItem(
                   icon: Icon(Icons.view_module), label: 'Galpon')
@@ -65,8 +64,8 @@ class HomePage extends StatelessWidget {
           switch (snapshot.data!) {
             case NavBarItem.HOME:
               return InfoPage();
-            case NavBarItem.RECURSOS:
-              return RecursosPage();
+            case NavBarItem.REPORTES:
+              return ReportesPage();
             case NavBarItem.ADD:
               return GalponesPage();
           }

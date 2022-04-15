@@ -38,6 +38,29 @@ class CuyProvider {
     return cuysList;
   }
 
+  Future<List<CuyModel>> CuysPorGalpon(int galpon) async {
+    final response = await client
+        .from('galpon')
+        .select('*,contenedor(*, cuy(*))')
+        .eq('id', galpon)
+        .execute();
+    final decodedData = response.toJson();
+    final cuysData = decodedData['data'][0];
+
+    List<CuyModel> cuysList = [];
+
+    final contenedor = cuysData['contenedor'];
+    contenedor.forEach((element) {
+      final cuys = element['cuy'];
+      cuys.forEach((cuy) {
+        final cuyTemp = CuyModel.fromJson(cuy);
+        if (cuyTemp.estado!) cuysList.add(cuyTemp);
+      });
+    });
+
+    return cuysList;
+  }
+
   Future<List<CuyModel>> cargarCuysContenedor(int contenedor) async {
     final response = await client
         .from('cuy')

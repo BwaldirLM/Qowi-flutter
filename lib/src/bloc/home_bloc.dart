@@ -1,8 +1,8 @@
 import 'package:rxdart/rxdart.dart';
 
-enum NavBarItem  {RECURSOS, HOME, ADD}
+enum NavBarItem { REPORTES, HOME, ADD }
 
-class HomeBloc{
+class HomeBloc {
   final _navBarController = BehaviorSubject<NavBarItem>();
 
   //Recuperar el stream
@@ -10,15 +10,14 @@ class HomeBloc{
 
   NavBarItem defaultItem = NavBarItem.HOME;
 
-
-  dispose(){
+  dispose() {
     _navBarController.close();
-}
+  }
 
   void pickItem(int value) {
-    switch(value){
+    switch (value) {
       case 0:
-        _navBarController.sink.add(NavBarItem.RECURSOS);
+        _navBarController.sink.add(NavBarItem.REPORTES);
         break;
       case 1:
         _navBarController.sink.add(NavBarItem.HOME);
@@ -26,6 +25,5 @@ class HomeBloc{
       case 2:
         _navBarController.sink.add(NavBarItem.ADD);
     }
-
   }
 }

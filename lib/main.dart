@@ -10,7 +10,9 @@ import 'package:qowi/src/pages/mover_cuys_page.dart';
 import 'package:qowi/src/pages/nacimiento_contenedor_page.dart';
 import 'package:qowi/src/pages/nacimiento_page.dart';
 import 'package:qowi/src/pages/register_page.dart';
+import 'package:qowi/src/pages/reporte_venta_page.dart';
 import 'package:qowi/src/pages/splash_page.dart';
+import 'package:qowi/src/pages/venta_info_page.dart';
 import 'package:qowi/src/pages/venta_page.dart';
 
 import 'package:qowi/src/preferencias_usuario/preferencia_usuario.dart';
@@ -58,7 +60,9 @@ class MyApp extends StatelessWidget {
                 'nacimiento': (context) => NacimientoPage(),
                 'mover': (_) => MoverCuyPage(),
                 'venta': (_) => VentaPage(),
-                'nacimientoContenedor': (_) => NacimientoContenedorPage()
+                'nacimientoContenedor': (_) => NacimientoContenedorPage(),
+                'reporteVentas': (_) => ReporteVentaPage(),
+                'ventaInfo': (_) => VentaInfoPage()
               }),
         ),
       ),
